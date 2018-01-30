@@ -1,0 +1,20 @@
+{
+  "writers": [
+    {
+      "alias": "main",
+      "login": "account@gmail.com",
+      "password": "password",
+      "guild": "<id of the guild>"
+    }
+  ],
+  "listeners": [
+    {
+      "login": "account2@gmail.com",
+      "password": "password",
+      "writer": "main",
+      "channels": {
+        "<channelID>": "<ParserName>"
+      }
+    }
+  ]
+}

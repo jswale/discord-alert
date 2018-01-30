@@ -1,0 +1,17 @@
+{
+  "<channelName>": {
+    "group": "<categoryName>",
+    "filters": [
+      {
+        "pokemons": "*",
+        "lvl": [30, 35],
+        "iv": 100,
+        "country": ["fr"]
+      }, {
+        "pokemons": ["246", "247", "248"],
+        "lvl": [30, 35],
+        "iv": 100
+      }
+    ]
+  }
+}
