@@ -7,10 +7,9 @@ module.exports = class DiscordListener extends DiscordClient {
         super(login, password);
         this.channels = channels;
         this.writer = writer;
-        this.start();
     }
 
-    start() {
+    onConnection() {
         // Listener
         this.client.on('message', (message) => {
             let channelId = message.channel.id;
