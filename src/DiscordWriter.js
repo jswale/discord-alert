@@ -43,20 +43,22 @@ module.exports = class DiscordWriter extends DiscordClient {
         if (typeof pokemon === "string") {
             this.getOrCreateChannel("Divers", "vrac").then(channel => channel.send(pokemon));
         } else {
-            this.broadcast(pokemon, this.buildMessage(pokemon));
+            this.broadcast(pokemon);
         }
     }
 
-    broadcast(pokemon, message) {
-        console.log(`Any registred user for IV:${pokemon.iv} LVL:${pokemon.lvl} PC:${pokemon.pc} From ${pokemon.country}?`);
+    broadcast(pokemon) {
+        console.log(`[${pokemon.country}] IV:${pokemon.iv} LVL:${pokemon.lvl} PC:${pokemon.pc}`);
         let altChannels = Filter.get(pokemon, RoutingRules);
         altChannels.forEach(key => {
-            console.log("Send to " + key);
-            this.getOrCreateChannel(RoutingRules[key]["group"], key).then(channel => channel.send(message));
+            console.log("Broadcast to " + key);
+            this.getOrCreateChannel(RoutingRules[key]["group"], key).then(channel => {
+                channel.send(this.buildMessage(pokemon, RoutingRules[key]["mentions"] || []));
+            });
         });
     }
 
-    buildMessage(pokemon) {
+    buildMessage(pokemon, mentions) {
         let embed = new Discord.RichEmbed();
         //embed.addField("IV", pokemon.iv, true);
         //embed.addField("Level", pokemon.lvl, true);
@@ -100,6 +102,10 @@ module.exports = class DiscordWriter extends DiscordClient {
 
         if (pokemon.country !== "fr") {
             embed.addField("Pays", pokemon.country);
+        }
+
+        if (mentions.length > 0) {
+            embed.addField("Poke", mentions.map(mention => `<@${mention}>`).join(" "));
         }
 
         embed.setFooter(`Source: ${pokemon.source}`);

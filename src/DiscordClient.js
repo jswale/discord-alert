@@ -8,10 +8,9 @@ module.exports = class DiscordClient {
         this.password = password;
         this.client = new Discord.Client();
         this.connected = false;
-        this.login();
     }
 
-    login() {
+    start() {
         Tokenizer.get(this.email, this.password)
             .then(token => this.client.login(token).then(() => {
                 this.connected = true;

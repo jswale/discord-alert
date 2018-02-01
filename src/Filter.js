@@ -30,7 +30,7 @@ function checkCondition(userFilter, pokemon, key) {
 
 function isPokemonListed(pokemons, pokemon) {
     if (Array.isArray(pokemons)) {
-        return pokemons.indexOf(pokemon.id) > -1;
+        return pokemons.indexOf(parseInt(pokemon.id)) > -1;
     } else {
         return pokemons === "*";
     }
