@@ -1,5 +1,5 @@
 const rp = require('request-promise');
-const Utils = require('./Utils.js');
+const Utils = require('./Utils');
 const fs = require("fs");
 
 const pokemondata = "https://github.com/PokemonGoF/PokemonGo-Web/raw/master/data/pokemondata.json";

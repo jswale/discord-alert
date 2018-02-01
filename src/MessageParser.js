@@ -1,4 +1,4 @@
-const Pokemon = require("./Pokemon.class.js");
+const Pokemon = require("./Pokemon.class");
 
 const pokedex100Cache = {};
 

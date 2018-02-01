@@ -2,15 +2,13 @@ function checkCondition(userFilter, pokemon, key) {
     const comparators = userFilter[key];
     const value = pokemon[key];
 
-    const type = typeof comparators;
-
     // One value comparation
-    if (type === "number") {
+    if (typeof comparators === "number") {
         return value === comparators;
     }
 
     // No filter
-    else if (type === "undefined") {
+    else if (type === undefined) {
         return true;
     }
 
@@ -37,7 +35,7 @@ function isPokemonListed(pokemons, pokemon) {
 function isInList(userFilter, pokemon, key) {
     const comparators = userFilter[key];
     const value = pokemon[key];
-    if(typeof comparators === "undefined") {
+    if(comparators === undefined) {
         return true;
     }
     return comparators.indexOf(value) !== -1;

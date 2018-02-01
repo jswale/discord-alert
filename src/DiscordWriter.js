@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
-const DiscordClient = require('./DiscordClient.js');
-const Utils = require('./Utils.js');
-const Filter = require('./Filter.js');
+const DiscordClient = require('./DiscordClient');
+const Utils = require('./Utils');
+const Filter = require('./Filter');
 const Pokedex = require('../data/pokedex.json');
 const RoutingRules = require('../data/routes.json');
 
@@ -14,6 +14,7 @@ module.exports = class DiscordWriter extends DiscordClient {
 
     onConnection() {
         this.categories = {};
+        this.channelsCache = {};
         this.getGuild().channels.forEach(channel => {
             if (channel.type === null) {
                 this.categories[channel.name] = channel;
@@ -21,7 +22,7 @@ module.exports = class DiscordWriter extends DiscordClient {
         });
 
         // Send messages
-        if (typeof this.messages !== "undefined") {
+        if (this.messages !== undefined) {
             let message;
             while ((message = this.messages.pop())) {
                 this.send(message);
@@ -32,7 +33,7 @@ module.exports = class DiscordWriter extends DiscordClient {
     send(pokemon) {
         //console.log("Sending message", message);
         if (false === this.connected) {
-            if (typeof this.messages === "undefined") {
+            if (this.messages === undefined) {
                 this.messages = [];
             }
             this.messages.push(pokemon);
@@ -40,11 +41,9 @@ module.exports = class DiscordWriter extends DiscordClient {
         }
 
         if (typeof pokemon === "string") {
-            let channel = this.getChannelByParent("Divers", "vrac");
-            channel.send(pokemon);
+            this.getOrCreateChannel("Divers", "vrac").then(channel => channel.send(pokemon));
         } else {
-            let message = this.buildMessage(pokemon);
-            this.broadcast(pokemon, message);
+            this.broadcast(pokemon, this.buildMessage(pokemon));
         }
     }
 
@@ -52,15 +51,8 @@ module.exports = class DiscordWriter extends DiscordClient {
         console.log(`Any registred user for IV:${pokemon.iv} LVL:${pokemon.lvl} PC:${pokemon.pc} From ${pokemon.country}?`);
         let altChannels = Filter.get(pokemon, RoutingRules);
         altChannels.forEach(key => {
-            let parent = RoutingRules[key]["group"];
             console.log("Send to " + key);
-
-            let altChannel = this.getChannelByParent(parent, key);
-            if (null !== altChannel) {
-                altChannel.send(message);
-            } else {
-                console.warn(`No channel ${key} in category ${parent}`);
-            }
+            this.getOrCreateChannel(RoutingRules[key]["group"], key).then(channel => channel.send(message));
         });
     }
 
@@ -74,7 +66,7 @@ module.exports = class DiscordWriter extends DiscordClient {
             embed.addField("Boost météo", "actif");
         }
 
-        if(pokemon.template) {
+        if (pokemon.template) {
             embed.setDescription(pokemon.template);
         }
 
@@ -114,13 +106,46 @@ module.exports = class DiscordWriter extends DiscordClient {
         return embed;
     }
 
-    getChannelByParent(parent, name) {
-        let parentChannel = this.categories[parent];
-        if (!parentChannel) {
-            return null;
-        }
-        return this.getGuild().channels.find(channel => {
-            return channel.name === name && null !== channel.parentID && channel.parentID === parentChannel.id;
+    getOrCreateCategory(name) {
+        return new Promise(resolve => {
+            let category = this.categories[name];
+            if (category === undefined) {
+                this.getGuild().createChannel(name, "category").then(channel => {
+                    this.categories[name] = channel;
+                    resolve(channel);
+                });
+            } else {
+                resolve(category);
+            }
+        });
+    }
+
+
+    getOrCreateChannel(category, name) {
+        return new Promise(resolve => {
+            let guild = this.getGuild();
+            this.getOrCreateCategory(category)
+                .then(parent => {
+                    let uniqKey = `${category}$#$${name}`;
+                    let cache = this.channelsCache[uniqKey];
+                    if (cache !== undefined) {
+                        resolve(cache);
+                    } else {
+                        let channel = guild.channels.find(channel => {
+                            return channel.name === name && null !== channel.parentID && channel.parentID === parent.id;
+                        });
+                        if (null === channel) {
+                            guild.createChannel(name).then(channel => {
+                                channel.setParent(parent);
+                                channel.setTopic(`Pokemon selected for ${name}`);
+                                this.channelsCache[uniqKey] = channel;
+                                resolve(channel);
+                            });
+                        } else {
+                            resolve(channel);
+                        }
+                    }
+                })
         });
     }
 

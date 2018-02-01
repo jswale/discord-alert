@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const Tokenizer = require('./Tokenizer.js');
+const Tokenizer = require('./Tokenizer');
 
 module.exports = class DiscordClient {
 

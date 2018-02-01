@@ -1,8 +1,8 @@
 //http://discordjs.readthedocs.io/en/latest/examples.html#logging-out
 //https://discord.js.org/#/docs/main/stable/class/User
 
-const DiscordListener = require('./src/DiscordListener.js');
-const DiscordWriter = require('./src/DiscordWriter.js');
+const DiscordListener = require('./src/DiscordListener');
+const DiscordWriter = require('./src/DiscordWriter');
 const Config = require("./data/config.json");
 
 const writers = {};

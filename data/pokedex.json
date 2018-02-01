@@ -4620,9 +4620,9 @@
     "BaseAttack": 192,
     "BaseDefense": 249,
     "BaseStamina": 180,
-    "CaptureRate": 0,
+    "CaptureRate": 0.03,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Artikodin"
   },
   "zapdos": {
@@ -4643,9 +4643,9 @@
     "BaseAttack": 253,
     "BaseDefense": 188,
     "BaseStamina": 180,
-    "CaptureRate": 0,
+    "CaptureRate": 0.03,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Électhor"
   },
   "moltres": {
@@ -4666,9 +4666,9 @@
     "BaseAttack": 251,
     "BaseDefense": 184,
     "BaseStamina": 180,
-    "CaptureRate": 0,
+    "CaptureRate": 0.03,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Sulfura"
   },
   "dratini": {
@@ -4795,9 +4795,9 @@
     "BaseAttack": 330,
     "BaseDefense": 200,
     "BaseStamina": 212,
-    "CaptureRate": 0,
+    "CaptureRate": 0.06,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Mewtwo"
   },
   "mew": {
@@ -4813,16 +4813,13 @@
       "Name": "Mew candies",
       "FamilyID": 151
     },
-    "Special Attack(s)": [
-      "Blizzard", "Earthquake", "Psychic", "Focus Blast", "Thunder", "Fire Blast", "Solar Beam", "Hyper Beam",
-      "Dragon Pulse"
-    ],
+    "Special Attack(s)": ["Blizzard", "Earthquake", "Psychic", "Focus Blast", "Thunder", "Fire Blast", "Solar Beam", "Hyper Beam", "Dragon Pulse"],
     "BaseAttack": 210,
     "BaseDefense": 210,
     "BaseStamina": 200,
     "CaptureRate": 0,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Mew"
   },
   "chikorita": {
@@ -7554,9 +7551,9 @@
     "BaseAttack": 241,
     "BaseDefense": 210,
     "BaseStamina": 180,
-    "CaptureRate": 0,
+    "CaptureRate": 0.02,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Raikou"
   },
   "entei": {
@@ -7576,9 +7573,9 @@
     "BaseAttack": 235,
     "BaseDefense": 176,
     "BaseStamina": 230,
-    "CaptureRate": 0,
+    "CaptureRate": 0.02,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Entei"
   },
   "suicune": {
@@ -7598,9 +7595,9 @@
     "BaseAttack": 180,
     "BaseDefense": 235,
     "BaseStamina": 200,
-    "CaptureRate": 0,
+    "CaptureRate": 0.02,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Suicune"
   },
   "larvitar": {
@@ -7730,14 +7727,14 @@
     "BaseAttack": 193,
     "BaseDefense": 323,
     "BaseStamina": 212,
-    "CaptureRate": 0,
+    "CaptureRate": 0.02,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Lugia"
   },
   "hooh": {
     "Number": "250",
-    "Name": "HoOh",
+    "Name": "Ho-Oh",
     "Classification": "Rainbow Pokemon",
     "Type I": ["Fire"],
     "Type II": ["Flying"],
@@ -7746,16 +7743,16 @@
     "Weight": "199 kg",
     "Height": "3,81 m",
     "Candy": {
-      "Name": "HoOh candies",
+      "Name": "Ho-Oh candies",
       "FamilyID": 250
     },
     "Special Attack(s)": ["Brave Bird", "Fire Blast", "Solar Beam", "Struggle"],
     "BaseAttack": 263,
     "BaseDefense": 301,
     "BaseStamina": 212,
-    "CaptureRate": 0,
+    "CaptureRate": 0.02,
     "FleeRate": 0.04,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Ho-Oh"
   },
   "celebi": {
@@ -12160,9 +12157,9 @@
     "BaseAttack": 192,
     "BaseDefense": 249,
     "BaseStamina": 180,
-    "CaptureRate": 0,
+    "CaptureRate": 0.03,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Artikodin"
   },
   "draby": {
@@ -16860,9 +16857,9 @@
     "BaseAttack": 251,
     "BaseDefense": 184,
     "BaseStamina": 180,
-    "CaptureRate": 0,
+    "CaptureRate": 0.03,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Sulfura"
   },
   "mmime": {
@@ -20736,9 +20733,9 @@
     "BaseAttack": 253,
     "BaseDefense": 188,
     "BaseStamina": 180,
-    "CaptureRate": 0,
+    "CaptureRate": 0.03,
     "FleeRate": 0.1,
-    "BuddyDistanceNeeded": 5,
+    "BuddyDistanceNeeded": 20,
     "NameLocale": "Électhor"
   },
   "zigzaton": {
