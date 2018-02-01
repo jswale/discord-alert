@@ -8,20 +8,24 @@ function checkCondition(userFilter, pokemon, key) {
     }
 
     // No filter
-    else if (type === undefined) {
+    else if (comparators === undefined) {
         return true;
     }
 
     // Range
-    else if (Array.isArray(comparators) && comparators.length === 2) {
-        return value >= comparators[0] && value <= comparators[1];
-        // wrong fromat
+    else if (Array.isArray(comparators)) {
+        switch (comparators.length) {
+            case 1:
+                return value === comparators[0];
+            case 2 :
+                return value >= comparators[0] && value <= comparators[1];
+            default:
+            // wrong fromat
+        }
     }
 
-    else {
-        console.log("wrong comparator format. Expecting array[2] or number");
-        return false;
-    }
+    console.log("wrong comparator format. Expecting array[2] or number", comparators, key);
+    return false;
 }
 
 function isPokemonListed(pokemons, pokemon) {
@@ -35,7 +39,7 @@ function isPokemonListed(pokemons, pokemon) {
 function isInList(userFilter, pokemon, key) {
     const comparators = userFilter[key];
     const value = pokemon[key];
-    if(comparators === undefined) {
+    if (comparators === undefined) {
         return true;
     }
     return comparators.indexOf(value) !== -1;
