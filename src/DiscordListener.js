@@ -15,9 +15,9 @@ module.exports = class DiscordListener extends DiscordClient {
         this.client.on('message', (message) => {
             let channelId = message.channel.id;
 
-            console.log("Receiving message", message.content);
+            //console.log("Receiving message", message.content);
 
-            if (typeof this.channels[channelId] === "undefined") {
+            if (this.channels[channelId] === undefined) {
                 // Ignore message
                 return;
             }

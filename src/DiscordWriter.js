@@ -21,7 +21,7 @@ module.exports = class DiscordWriter extends DiscordClient {
         });
 
         // Send messages
-        if (typeof this.messages !== "undefined") {
+        if (this.messages === undefined) {
             let message;
             while ((message = this.messages.pop())) {
                 this.send(message);
@@ -32,7 +32,7 @@ module.exports = class DiscordWriter extends DiscordClient {
     send(pokemon) {
         //console.log("Sending message", message);
         if (false === this.connected) {
-            if (typeof this.messages === "undefined") {
+            if (this.messages === undefined) {
                 this.messages = [];
             }
             this.messages.push(pokemon);
