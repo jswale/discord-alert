@@ -2,15 +2,17 @@
 //https://discord.js.org/#/docs/main/stable/class/User
 
 const DiscordListener = require('./src/DiscordListener');
-const DiscordWriter = require('./src/DiscordWriter');
+const Writer = require('./src/Writer');
 const Config = require("./data/config.json");
 
 const writers = {};
 Config.writers.forEach(conf => {
     console.log(`Creating writer ${conf.alias}`);
-    let writer = new DiscordWriter(conf.server, conf.guild);
-    writers[conf.alias] = writer;
-    writer.start();
+    let writer = Writer.get(conf);
+    if(null !== writer) {
+        writers[conf.alias] = writer;
+        writer.start();
+    }
 });
 
 Config.listeners.forEach(conf => {

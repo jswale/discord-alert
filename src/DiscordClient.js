@@ -6,10 +6,10 @@ module.exports = class DiscordClient {
     constructor(conf) {
         this.conf = conf;
         this.connected = false;
-        this.client = new Discord.Client();
     }
 
     start() {
+        this.client = new Discord.Client();
         if (this.conf.token === undefined) {
             Tokenizer.get(this.conf.login, this.conf.password)
                 .then(token => this.connect(token))

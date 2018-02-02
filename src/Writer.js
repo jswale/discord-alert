@@ -1,16 +1,51 @@
 const Discord = require("discord.js");
+const rp = require('request-promise');
 const DiscordClient = require('./DiscordClient');
 const Utils = require('./Utils');
 const Filter = require('./Filter');
 const Pokedex = require('../data/pokedex.json');
 const RoutingRules = require('../data/routes.json');
 
-module.exports = class DiscordWriter extends DiscordClient {
-
-    constructor(conf, guildId) {
-        super(conf);
-        this.guildId = guildId;
+function getPokedexEntry(pokemon) {
+    let normalized = Utils.normalize(pokemon.name);
+    let entry = Pokedex[normalized];
+    if (entry === undefined) {
+        console.log(`Unable to find pokemon with name ${pokemon.name}`);
     }
+    return entry;
+}
+
+class SmsWriter {
+    constructor(conf) {
+        this.conf = conf;
+    }
+
+    start() {
+    }
+
+    buildMessage(pokemon) {
+        let s;
+        let entry = getPokedexEntry(pokemon);
+
+        if (entry) {
+            s = `[${entry.Number}] ${entry.NameLocale}`;
+        } else {
+            s = `${pokemon.name}`;
+        }
+        s += ` - IV ${pokemon.iv} - PC ${pokemon.pc} - LVL ${pokemon.lvl}`;
+        if (null !== pokemon.url) {
+            s += `\n${pokemon.url}`;
+        }
+        return s;
+    }
+
+    send(pokemon) {
+        let url = this.conf.url.replace(/\{MESSAGE\}/, this.buildMessage(pokemon));
+        rp(url).then(() => console.log("SMS sent")).catch((reason) => console.log(`Error sending SMS : ${reason}`));
+    }
+}
+
+class DiscordWriter extends DiscordClient {
 
     onConnection() {
         this.categories = {};
@@ -34,7 +69,7 @@ module.exports = class DiscordWriter extends DiscordClient {
     getGuild() {
         if (this.guild === undefined) {
             //this.client.guilds.forEach(guild=>console.log(`${guild.id} : ${guild.name}`));
-            this.guild = this.client.guilds.find("id", this.guildId);
+            this.guild = this.client.guilds.find("id", this.conf.guild);
         }
         return this.guild;
     }
@@ -59,11 +94,7 @@ module.exports = class DiscordWriter extends DiscordClient {
     broadcast(pokemon) {
         console.log(`[${pokemon.country}] IV:${pokemon.iv} LVL:${pokemon.lvl} PC:${pokemon.pc}`);
 
-        let normalized = Utils.normalize(pokemon.name);
-        let entry = Pokedex[normalized];
-        if(entry === undefined) {
-            console.log(`Unable to find pokemon with name ${pokemon.name}`);
-        }
+        let entry = getPokedexEntry(pokemon);
 
         let altChannels = Filter.get(pokemon, entry, RoutingRules);
         altChannels.forEach(key => {
@@ -76,7 +107,7 @@ module.exports = class DiscordWriter extends DiscordClient {
 
     getDescription(pokemon, entry) {
         let s;
-        if(entry) {
+        if (entry) {
             s = `[${entry.Number}] ${entry.NameLocale}`;
         } else {
             s = `${pokemon.name}`;
@@ -179,5 +210,17 @@ module.exports = class DiscordWriter extends DiscordClient {
                 })
         });
     }
-
 };
+
+module.exports = {
+    get: function (conf) {
+        switch (conf.type) {
+            case "SMS":
+                return new SmsWriter(conf.server);
+            case "D":
+                return new DiscordWriter(conf.server);
+            default:
+                return null;
+        }
+    }
+}
