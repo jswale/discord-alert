@@ -8,12 +8,13 @@ const Config = require("./data/config.json");
 const writers = {};
 Config.writers.forEach(conf => {
     console.log(`Creating writer ${conf.alias}`);
-    let writer = new DiscordWriter(conf.login, conf.password, conf.guild);
+    let writer = new DiscordWriter(conf.server, conf.guild);
     writers[conf.alias] = writer;
     writer.start();
 });
 
+
 Config.listeners.forEach(conf => {
     console.log(`Creating listener with ${conf.login}`);
-    new DiscordListener(conf.login, conf.password, conf.channels, writers[conf.writer]).start();
+    new DiscordListener(conf.server, conf.channels, writers[conf.writer]).start();
 });

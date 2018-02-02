@@ -7,8 +7,8 @@ const RoutingRules = require('../data/routes.json');
 
 module.exports = class DiscordWriter extends DiscordClient {
 
-    constructor(login, password, guildId) {
-        super(login, password);
+    constructor(conf, guildId) {
+        super(conf);
         this.guildId = guildId;
     }
 
@@ -28,6 +28,15 @@ module.exports = class DiscordWriter extends DiscordClient {
                 this.send(message);
             }
         }
+    }
+
+
+    getGuild() {
+        if (this.guild === undefined) {
+            //this.client.guilds.forEach(guild=>console.log(`${guild.id} : ${guild.name}`));
+            this.guild = this.client.guilds.find("id", this.guildId);
+        }
+        return this.guild;
     }
 
     send(pokemon) {
@@ -155,11 +164,4 @@ module.exports = class DiscordWriter extends DiscordClient {
         });
     }
 
-    getGuild() {
-        if (!this.guild) {
-            //this.client.guilds.forEach(guild=>console.log(`${guild.id} : ${guild.name}`));
-            this.guild = this.client.guilds.find("id", this.guildId);
-        }
-        return this.guild;
-    }
 };

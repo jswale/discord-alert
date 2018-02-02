@@ -2,8 +2,17 @@
   "writers": [
     {
       "alias": "main",
-      "login": "account@gmail.com",
-      "password": "password",
+      "server": {
+        "login": "account@gmail.com",
+        "password": "password"
+      },
+      "guild": "<id of the guild>"
+    },
+    {
+      "alias": "alt",
+      "server": {
+        "token": ""
+      },
       "guild": "<id of the guild>"
     }
   ],

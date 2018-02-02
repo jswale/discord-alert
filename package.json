@@ -1,7 +1,13 @@
 {
   "name": "discord-alert",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^2.5.3"
+  },
   "dependencies": {
     "discord.js": "^11.3.0",
     "discordv8": "^8.4.2",

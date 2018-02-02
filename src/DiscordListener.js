@@ -3,8 +3,8 @@ const MessageParser = require('./MessageParser.js');
 
 module.exports = class DiscordListener extends DiscordClient {
 
-    constructor(login, password, channels, writer) {
-        super(login, password);
+    constructor(conf, channels, writer) {
+        super(conf);
         this.channels = channels;
         this.writer = writer;
     }
