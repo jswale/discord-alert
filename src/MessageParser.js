@@ -44,8 +44,7 @@ module.exports = class MessageParser {
 
     static LivePokeMapParis(message) {
         //console.log(`livePokeMapParis#${message.id}`, message.content);
-        // [94000] : **Skitty** ♀  IV**100%** LVL**30** PC**565** Despawn 15:22 (15/15/15) (2 Rue Gustave Eiffel, 94000 Créteil, France) https://www.google.com/maps?q=48.79843493158520%2C2.45248360055324
-        let rx = /\[(\d+)]\s:\s\*{2}([^\*]+)\*{2}\s.\s+IV\*{2}(\d+)%\*{2}\s+LVL\*{2}(\d+)\*{2}\s+PC\*{2}(\d+)\*\*\sDespawn\s+(\d{2}\:\d{2})\s(\*{2}Boost météo [^\*]*\*{2}\s+)?\(([^\)]*)\)\s(?:\(([^\)]*)\)\s+)?\(([^\)]*)\)\s+(http.*)/g;
+        let rx = /\[([^\]]+)\]\s:\s\*{2}([^\*]+)\*{2}\s.\s+IV\*{2}(\d+)%\*{2}\s+LVL\*{2}(\d+)\*{2}\s+PC\*{2}(\d+)\*\*\sDespawn\s+(\d{2}\:\d{2})\s(\*{2}Boost météo [^\*]*\*{2}\s+)?\(([^\)]*)\)\s(?:\(([^\)]*)\)\s+)?\(([^\)]*)\)\s+(http.*)/g;
         // 1 : postalCode
         // 2 : name
         // 3 : IV

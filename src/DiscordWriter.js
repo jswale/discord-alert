@@ -58,39 +58,51 @@ module.exports = class DiscordWriter extends DiscordClient {
 
     broadcast(pokemon) {
         console.log(`[${pokemon.country}] IV:${pokemon.iv} LVL:${pokemon.lvl} PC:${pokemon.pc}`);
-        let altChannels = Filter.get(pokemon, RoutingRules);
+
+        let normalized = Utils.normalize(pokemon.name);
+        let entry = Pokedex[normalized];
+        if(entry === undefined) {
+            console.log(`Unable to find pokemon with name ${pokemon.name}`);
+        }
+
+        let altChannels = Filter.get(pokemon, entry, RoutingRules);
         altChannels.forEach(key => {
             console.log("Broadcast to " + key);
             this.getOrCreateChannel(RoutingRules[key]["group"], key).then(channel => {
-                channel.send(this.buildMessage(pokemon, RoutingRules[key]["mentions"] || []));
+                channel.send(this.buildMessage(pokemon, entry, RoutingRules[key]["mentions"] || []));
             });
         });
     }
 
-    buildMessage(pokemon, mentions) {
+    getDescription(pokemon, entry) {
+        let s;
+        if(entry) {
+            s = `[${entry.Number}] ${entry.NameLocale}`;
+        } else {
+            s = `${pokemon.name}`;
+        }
+
+        s += ` - IV ${pokemon.iv} - PC ${pokemon.pc} - LVL ${pokemon.lvl}`;
+        if (pokemon.template) {
+            s += `\n${pokemon.template}`;
+        }
+        return s;
+    }
+
+    buildMessage(pokemon, entry, mentions) {
         let embed = new Discord.RichEmbed();
         //embed.addField("IV", pokemon.iv, true);
         //embed.addField("Level", pokemon.lvl, true);
         embed.setTimestamp(new Date());
 
-        if (pokemon.boosted === true) {
-            embed.addField("Boost météo", "actif");
-        }
-
-        if (pokemon.template) {
-            embed.setDescription(pokemon.template);
-        }
-
-        let normalized = Utils.normalize(pokemon.name);
-        let entry = Pokedex[normalized];
         if (entry) {
             //console.log(`Found pokemon ${message.name}`, pokemon);
-            embed.setAuthor(`[${entry.Number}] ${entry.NameLocale} - IV ${pokemon.iv} - PC ${pokemon.pc} - LVL ${pokemon.lvl}`, `https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`)
-                .setThumbnail(`https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`)
-        } else {
-            console.log("Unable to find pokemon with name", normalized);
-            embed.setAuthor(`${pokemon.name} - IV ${pokemon.iv} - PC ${pokemon.pc} - LVL ${pokemon.lvl}`);
+//            embed.setAuthor(`[${entry.Number}] ${entry.NameLocale} - IV ${pokemon.iv} - PC ${pokemon.pc} - LVL ${pokemon.lvl}`, `https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`);
+            embed.setThumbnail(`https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`);
         }
+
+        embed.setDescription(this.getDescription(pokemon, entry));
+
 
         let location = pokemon.location || "";
         if (null !== pokemon.url) {
@@ -101,12 +113,16 @@ module.exports = class DiscordWriter extends DiscordClient {
             if (null !== arr) {
                 embed.addField("GPS", `${arr[1]} | ${arr[2]}`);
             }
-            embed.setTitle("Afficher sur la carte");
-            embed.setURL(pokemon.url);
+            //embed.setTitle("Afficher sur la carte");
+            //embed.setURL(pokemon.url);
         }
 
         if ("" !== location) {
             embed.addField("Lieu", location);
+        }
+
+        if (pokemon.boosted === true) {
+            embed.addField("Boost météo", "actif");
         }
 
         if (pokemon.country !== "fr") {

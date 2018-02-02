@@ -32,6 +32,17 @@ function isPokemonListed(pokemons, pokemon) {
     if (Array.isArray(pokemons)) {
         return pokemons.indexOf(parseInt(pokemon.id)) > -1;
     } else {
+        return pokemons === "*" || pokemons === undefined;
+    }
+}
+
+function isPokemonExclude(pokemons, pokemon) {
+    if(pokemons === undefined) {
+        return false;
+    }
+    if (Array.isArray(pokemons)) {
+        return pokemons.indexOf(parseInt(pokemon.id)) > -1;
+    } else {
         return pokemons === "*";
     }
 }
@@ -46,12 +57,15 @@ function isInList(userFilter, pokemon, key) {
 }
 
 module.exports = {
-    get: function (entry, users) {
+    get: function (entry, pokedex, users) {
         return Object.keys(users).filter(user => {
             //console.log(`\n--------------------\nChecking for ${user}`);
             return users[user]["filters"].some(filter => {
-                if (!isPokemonListed(filter.pokemons, entry)) {
+                if (pokedex !== undefined && !isPokemonListed(filter.pokemons, pokedex)) {
                     //console.debug("Missmatch pokemon", filter.pokemons, entry);
+                    return false;
+                }
+                if (pokedex !== undefined && isPokemonExclude(filter.excludePokemons, pokedex)) {
                     return false;
                 }
                 if (!checkCondition(filter, entry, 'lvl')) {

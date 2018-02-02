@@ -13,7 +13,6 @@ Config.writers.forEach(conf => {
     writer.start();
 });
 
-
 Config.listeners.forEach(conf => {
     console.log(`Creating listener with ${conf.login}`);
     new DiscordListener(conf.server, conf.channels, writers[conf.writer]).start();
