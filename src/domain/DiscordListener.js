@@ -1,8 +1,8 @@
 'use strict';
 
 const DiscordClient = require('./DiscordClient');
-const MessageParser = require('./MessageParser');
-const Logger = require('./helpers/Logger');
+const MessageParser = require('../MessageParser');
+const Logger = require('../helpers/Logger');
 
 module.exports = class DiscordListener extends DiscordClient {
 

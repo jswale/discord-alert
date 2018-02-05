@@ -38,10 +38,14 @@ function isPokemonListed(pokemons, pokemon) {
         return false;
     }
     if (Array.isArray(pokemons)) {
-        return pokemons.indexOf(parseInt(pokemon.Number, 10)) > -1;
+        return contains(pokemons, pokemon);
     } else {
         return pokemons === '*' || !pokemons;
     }
+}
+
+function contains(pokemons, pokemon) {
+    return pokemons.indexOf(parseInt(pokemon.Number, 10)) > -1;
 }
 
 function isPokemonExclude(pokemons, pokemon) {
@@ -52,7 +56,7 @@ function isPokemonExclude(pokemons, pokemon) {
         return false;
     }
     if (Array.isArray(pokemons)) {
-        return pokemons.indexOf(parseInt(pokemon.Number, 10)) > -1;
+        return contains(pokemons, pokemon);
     } else {
         return pokemons === '*';
     }

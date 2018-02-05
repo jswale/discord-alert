@@ -1,8 +1,8 @@
 'use strict';
 
 const Discord = require('discord.js');
-const Logger = require('./helpers/Logger');
-const Tokenizer = require('./Tokenizer');
+const Logger = require('../helpers/Logger');
+const Tokenizer = require('../Tokenizer');
 
 module.exports = class DiscordClient {
 

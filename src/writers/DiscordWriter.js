@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-const DiscordClient = require('../DiscordClient');
+const DiscordClient = require('../domain/DiscordClient');
 const Utils = require('../helpers/Utils');
 const Logger = require('../helpers/Logger');
 const Filter = require('../Filter');
@@ -56,59 +56,9 @@ class DiscordWriter extends DiscordClient {
         Filter.get(pokemon, entry).forEach(rule => {
             Logger.debug(`Broadcast to ${rule.group} > ${rule.name}`);
             this.getOrCreateChannel(rule.group, rule.name).then(channel => {
-                channel.send(this.buildMessage(pokemon, entry, rule.mentions));
+                channel.send(DiscordWriter.buildMessage(pokemon, entry, rule.mentions));
             });
         });
-    }
-
-    buildMessage(pokemon, entry, mentions = []) {
-        let embed = new Discord.RichEmbed();
-        embed.setTimestamp(new Date());
-
-        if (entry) {
-            embed.setTitle(`[${pokemon.country.toUpperCase()}] ${entry.Number} - ${entry.NameLocale}`);
-            //embed.setAuthor(`[${pokemon.country.toUpperCase()}] ${entry.Number} - ${entry.NameLocale}`, `https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`);
-            embed.setThumbnail(`https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`);
-        } else {
-            embed.setTitle(`[${pokemon.country.toUpperCase()}] ${entry.name}`);
-            //embed.setAuthor(`[${pokemon.country.toUpperCase()}] ${entry.name}`);
-        }
-
-        let description;
-        description = `IV: **${pokemon.iv}** / LVL: **${pokemon.lvl}** / CP: **${pokemon.pc}**`;
-        if (pokemon.template) {
-            description += `\n${pokemon.template}`;
-        }
-
-        if (pokemon.despawn) {
-            description += `\nDisparait à ${pokemon.despawn}`;
-        }
-
-
-        if (pokemon.location) {
-            description += `\n\n${pokemon.location}`;
-        }
-
-        if (pokemon.url) {
-            description += `\n\n${pokemon.url}`;
-            embed.setURL(pokemon.url);
-            {
-                let rx = /^.*?(\d+\.\d+)(?:%2C|,)(\d+\.\d+)$/;
-                let arr = rx.exec(pokemon.url);
-                if (null !== arr) {
-                    description += `\n\nGPS: ${arr[1]} | ${arr[2]}`;
-                }
-            }
-        }
-
-        embed.setDescription(description);
-
-        if (mentions.length > 0) {
-            embed.addField('Poke', mentions.map(mention => `<@${mention}>`).join(' '));
-        }
-
-        embed.setFooter(`Source: ${pokemon.source}`);
-        return embed;
     }
 
     getOrCreateCategory(name) {
@@ -124,7 +74,6 @@ class DiscordWriter extends DiscordClient {
             }
         });
     }
-
 
     getOrCreateChannel(category, name) {
         return new Promise(resolve => {
@@ -153,6 +102,58 @@ class DiscordWriter extends DiscordClient {
                 })
         });
     }
-};
+
+    static buildMessage(pokemon, entry, mentions = []) {
+        let embed = new Discord.RichEmbed();
+        embed.setTimestamp(new Date());
+
+        let title;
+        if (entry) {
+            title = `[${pokemon.country.toUpperCase()}] ${entry.Number} - ${entry.NameLocale}`;
+            //embed.setAuthor(`[${pokemon.country.toUpperCase()}] ${entry.Number} - ${entry.NameLocale}`, `https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`);
+            embed.setThumbnail(`https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`);
+        } else {
+            title = `[${pokemon.country.toUpperCase()}] ${entry.name}`;
+            //embed.setAuthor(`[${pokemon.country.toUpperCase()}] ${entry.name}`);
+        }
+        if (pokemon.template) {
+            title += ` (${pokemon.template})`;
+        }
+        embed.setTitle(title);
+
+        let description;
+        description = `IV: **${pokemon.iv}** / LVL: **${pokemon.lvl}** / CP: **${pokemon.pc}**`;
+
+        if (pokemon.despawn) {
+            description += `\nDisparait à ${pokemon.despawn}`;
+        }
+
+        if (pokemon.location) {
+            description += `\n\n${pokemon.location}`;
+        }
+
+        if (pokemon.url) {
+            description += `\n\n${pokemon.url}`;
+            embed.setURL(pokemon.url);
+            {
+                let rx = /^.*?(\d+\.\d+)(?:%2C|,)(\d+\.\d+)$/;
+                let arr = rx.exec(pokemon.url);
+                if (null !== arr) {
+                    description += `\n\nGPS: ${arr[1]} | ${arr[2]}`;
+                }
+            }
+        }
+
+        embed.setDescription(description);
+
+        if (mentions.length > 0) {
+            embed.addField('Poke', mentions.map(mention => `<@${mention}>`).join(' '));
+        }
+
+        embed.setFooter(`Source: ${pokemon.source}`);
+        return embed;
+    }
+}
+
 
 module.exports = DiscordWriter;
