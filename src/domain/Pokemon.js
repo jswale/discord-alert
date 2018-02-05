@@ -1,5 +1,7 @@
-module.exports = class Pokemon {
-    constructor(source, name, iv, lvl, pc, boosted, template, country, location, url) {
+"use strict";
+
+class Pokemon {
+    constructor(source, name, iv, lvl, pc, boosted, template, despawn, country, location, url) {
         this.source = source;
         this.name = name;
         this.iv = parseInt(iv);
@@ -7,8 +9,11 @@ module.exports = class Pokemon {
         this.pc = parseInt(pc);
         this.boosted = boosted;
         this.template = template;
+        this.despawn = despawn;
         this.country = country;
         this.location = location;
         this.url = url;
     }
-};
+}
+
+module.exports = Pokemon;

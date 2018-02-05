@@ -9,8 +9,7 @@ The file `data/config.json` contains the configuration for the servers used for 
 The writers are defined in the array named **writers**
 ```json
 {
-    "writers": [
-       ... 
+    "writers": [        
     ]
 }
 ```
@@ -26,7 +25,6 @@ The type allowed are :
   "alias" : "writerAlias",
   "type" : "D",
   "server" : {
-    ...
   }  
 }
 ```
@@ -34,6 +32,8 @@ The type allowed are :
 Depending on the type of the writer, the server node changes.
 
 #### Discord Writer
+
+__Important__:  Check that the account used to publish informations is allowed to manage channels
 
 We first need an ID of a guild (you can find it on the URL of the web application of discord) to write the messages 
 ```json
@@ -83,7 +83,6 @@ The listeners are defined in the array named **listeners** and are a collection 
 ```json
 {
     "listeners": [
-       ... 
     ]
 }
 ```
@@ -119,12 +118,14 @@ Or using login/password :
 
 You can list, in this section, all the channels available from the account specify in the `server` section you want to listen.
 ```json
-  "channels": {
+{
+  "channels" : {
     "<channel_id>": "<formater>"
   }
+}
 ```
 
-Associated to the channel_id, you have to define a formater. The current formaters are defined in `src/MessageParser` :
+Associated to the channel_id, you have to define a formater. The current formaters are defined in the folder `src/parsers` :
 * MLV
 * LMPM
 * PDX100

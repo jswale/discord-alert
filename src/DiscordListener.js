@@ -1,5 +1,8 @@
-const DiscordClient = require('./DiscordClient.js');
-const MessageParser = require('./MessageParser.js');
+'use strict';
+
+const DiscordClient = require('./DiscordClient');
+const MessageParser = require('./MessageParser');
+const Logger = require('./helpers/Logger');
 
 module.exports = class DiscordListener extends DiscordClient {
 
@@ -14,17 +17,12 @@ module.exports = class DiscordListener extends DiscordClient {
         this.client.on('message', (message) => {
             let channelId = message.channel.id;
 
-            //console.log("Receiving message", message.content);
-
             if (this.channels[channelId] === undefined) {
                 // Ignore message
                 return;
             }
 
-            let pokemon = MessageParser.parse(message, this.channels[channelId]);
-            if (null !== pokemon) {
-                this.writer.send(pokemon);
-            }
+            MessageParser.parse(message, this.channels[channelId]).then(pokemon => this.writer.send(pokemon)).catch(reason => Logger.warn(reason));
         });
     }
 };

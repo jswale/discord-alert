@@ -1,9 +1,12 @@
-const rp = require('request-promise');
-const Utils = require('./Utils');
-const fs = require("fs");
+'use strict';
 
-const pokemondata = "https://github.com/PokemonGoF/PokemonGo-Web/raw/master/data/pokemondata.json";
-const locale_fr = "https://github.com/PokemonGoF/PokemonGo-Bot/raw/master/data/locales/fr.json";
+const fs = require('fs');
+const rp = require('request-promise');
+const Utils = require('./helpers/Utils');
+const Logger = require('./helpers/Logger');
+
+const pokemondata = 'https://github.com/PokemonGoF/PokemonGo-Web/raw/master/data/pokemondata.json';
+const locale_fr = 'https://github.com/PokemonGoF/PokemonGo-Bot/raw/master/data/locales/fr.json';
 
 function consolidate(pokemons, locale) {
     // Generate by keys
@@ -26,14 +29,15 @@ function consolidate(pokemons, locale) {
     return pokedex;
 }
 
-console.log("Loading datas...");
+Logger.info('Loading datas...');
 Promise.all([rp(pokemondata), rp(locale_fr)])
     .then(values => {
-        console.log(" > done");
+        Logger.info(' > done');
         let pokemons = JSON.parse(values[0]);
         let locale = JSON.parse(values[1]);
 
-        console.log("Generating Pokedex...");
+        Logger.info('Generating Pokedex...');
         let pokedex = consolidate(pokemons, locale);
-        fs.writeFile('../data/pokedex.json', JSON.stringify(pokedex), 'utf8', () => console.log(" > done"));
+        fs.writeFile('../data/pokedex.json', JSON.stringify(pokedex), 'utf8', () => Logger.info(' > done'));
+
     });

@@ -1,4 +1,9 @@
 {
+  "conf" : {
+    "pokedex100" : {
+      "sessionId":"<sessionId>"
+    }
+  },
   "writers": [
     {
       "alias": "main",

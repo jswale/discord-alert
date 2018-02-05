@@ -1,21 +1,16 @@
 //http://discordjs.readthedocs.io/en/latest/examples.html#logging-out
 //https://discord.js.org/#/docs/main/stable/class/User
 
+const MessageParser = require('./src/MessageParser');
 const DiscordListener = require('./src/DiscordListener');
 const Writer = require('./src/Writer');
-const Config = require("./data/config.json");
+const Logger = require('./src/helpers/Logger');
+const config = require('./src/helpers/Config');
 
-const writers = {};
-Config.writers.forEach(conf => {
-    console.log(`Creating writer ${conf.alias}`);
-    let writer = Writer.get(conf);
-    if(null !== writer) {
-        writers[conf.alias] = writer;
-        writer.start();
-    }
-});
+MessageParser.init();
+Writer.init();
 
-Config.listeners.forEach(conf => {
-    console.log(`Creating listener with ${conf.login}`);
-    new DiscordListener(conf.server, conf.channels, writers[conf.writer]).start();
+config.get("listeners").forEach(conf => {
+    Logger.info(`Creating listener`);
+    new DiscordListener(conf.server, conf.channels, Writer.get(conf.writer)).start();
 });

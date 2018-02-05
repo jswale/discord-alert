@@ -1,14 +1,19 @@
+'use strict';
+
+const Logger = require('./helpers/Logger');
+const RoutingRules = require('../data/routes.json');
+
 function checkCondition(userFilter, pokemon, key) {
     const comparators = userFilter[key];
     const value = pokemon[key];
 
     // One value comparation
-    if (typeof comparators === "number") {
+    if (typeof comparators === 'number') {
         return value === comparators;
     }
 
     // No filter
-    else if (comparators === undefined) {
+    else if (!comparators) {
         return true;
     }
 
@@ -24,68 +29,75 @@ function checkCondition(userFilter, pokemon, key) {
         }
     }
 
-    console.log("wrong comparator format. Expecting array[2] or number", comparators, key);
+    Logger.error('wrong comparator format. Expecting array[2] or number', {comparators: comparators, key: key});
     return false;
 }
 
 function isPokemonListed(pokemons, pokemon) {
+    if (!pokemon) {
+        return false;
+    }
     if (Array.isArray(pokemons)) {
-        return pokemons.indexOf(parseInt(pokemon.id)) > -1;
+        return pokemons.indexOf(parseInt(pokemon.Number, 10)) > -1;
     } else {
-        return pokemons === "*" || pokemons === undefined;
+        return pokemons === '*' || !pokemons;
     }
 }
 
 function isPokemonExclude(pokemons, pokemon) {
-    if(pokemons === undefined) {
+    if (!pokemon) {
+        return true;
+    }
+    if (!pokemons) {
         return false;
     }
     if (Array.isArray(pokemons)) {
-        return pokemons.indexOf(parseInt(pokemon.id)) > -1;
+        return pokemons.indexOf(parseInt(pokemon.Number, 10)) > -1;
     } else {
-        return pokemons === "*";
+        return pokemons === '*';
     }
 }
 
 function isInList(userFilter, pokemon, key) {
     const comparators = userFilter[key];
     const value = pokemon[key];
-    if (comparators === undefined) {
+    if (!comparators) {
         return true;
     }
     return comparators.indexOf(value) !== -1;
 }
 
 module.exports = {
-    get: function (entry, pokedex, users) {
-        return Object.keys(users).filter(user => {
-            //console.log(`\n--------------------\nChecking for ${user}`);
-            return users[user]["filters"].some(filter => {
-                if (pokedex !== undefined && !isPokemonListed(filter.pokemons, pokedex)) {
-                    //console.debug("Missmatch pokemon", filter.pokemons, entry);
+    get: function (entry, pokedex) {
+        return RoutingRules.filter(rule => {
+            return rule.filters.some(filter => {
+                if (pokedex && !isPokemonListed(filter.pokemons, pokedex)) {
+                    //Logger.debug(`[filter] Pokemon is not watched`);
                     return false;
                 }
-                if (pokedex !== undefined && isPokemonExclude(filter.excludePokemons, pokedex)) {
+                if (pokedex && isPokemonExclude(filter.excludePokemons, pokedex)) {
+                    //Logger.debug(`[filter] Pokemon is excluded`);
                     return false;
                 }
                 if (!checkCondition(filter, entry, 'lvl')) {
-                    //console.debug("Missmatch lvl", filter.lvl, entry.lvl);
+                    //Logger.debug(`[filter] Missmatch lvl`);
                     return false;
                 }
                 if (!checkCondition(filter, entry, 'iv')) {
-                    //console.debug("Missmatch IV", filter.iv, entry.iv);
+                    //Logger.debug(`[filter] Missmatch iv`);
                     return false;
                 }
                 if (!checkCondition(filter, entry, 'pc')) {
-                    //console.debug("Missmatch PC", filter.pc, entry.pc);
+                    //Logger.debug(`[filter] Missmatch pc`);
                     return false;
                 }
                 if (!isInList(filter, entry, 'country')) {
-                    //console.debug("Missmatch country", filter.country, entry.country);
+                    //Logger.debug(`[filter] Missmatch country`);
                     return false;
                 }
-                //console.log(`Found match for ${user}`);
+
                 return true;
+
             });
         });
     }

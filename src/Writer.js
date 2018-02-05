@@ -1,226 +1,41 @@
-const Discord = require("discord.js");
+'use strict';
+
 const rp = require('request-promise');
-const DiscordClient = require('./DiscordClient');
-const Utils = require('./Utils');
-const Filter = require('./Filter');
-const Pokedex = require('../data/pokedex.json');
-const RoutingRules = require('../data/routes.json');
 
-function getPokedexEntry(pokemon) {
-    let normalized = Utils.normalize(pokemon.name);
-    let entry = Pokedex[normalized];
-    if (entry === undefined) {
-        console.log(`Unable to find pokemon with name ${pokemon.name}`);
-    }
-    return entry;
-}
+const Logger = require('./helpers/Logger');
+const Utils = require('./helpers/Utils');
+const DiscordWriter = require('./writers/DiscordWriter');
+const SmsWriter = require('./writers/SmsWriter');
+const config = require('./helpers/Config');
 
-class SmsWriter {
-    constructor(conf) {
-        this.conf = conf;
-    }
 
-    start() {
-    }
+const writers = {};
 
-    buildMessage(pokemon) {
-        let s;
-        let entry = getPokedexEntry(pokemon);
-
-        if (entry) {
-            s = `[${entry.Number}] ${entry.NameLocale}`;
-        } else {
-            s = `${pokemon.name}`;
-        }
-        s += ` - IV ${pokemon.iv} - PC ${pokemon.pc} - LVL ${pokemon.lvl}`;
-        if (null !== pokemon.url) {
-            s += `\n${pokemon.url}`;
-        }
-        return s;
-    }
-
-    send(pokemon) {
-        let url = this.conf.url.replace(/\{MESSAGE\}/, this.buildMessage(pokemon));
-        rp(url).then(() => console.log("SMS sent")).catch((reason) => console.log(`Error sending SMS : ${reason}`));
+function load(conf) {
+    Logger.info(`Creating writer ${conf.alias}`);
+    let writer = create(conf);
+    if (null !== writer) {
+        writers[conf.alias] = writer;
+        writer.start();
     }
 }
 
-class DiscordWriter extends DiscordClient {
-
-    onConnection() {
-        this.categories = {};
-        this.channelsCache = {};
-        this.getGuild().channels.forEach(channel => {
-            if (channel.type === null) {
-                this.categories[channel.name] = channel;
-            }
-        });
-
-        // Send messages
-        if (this.messages !== undefined) {
-            let message;
-            while ((message = this.messages.pop())) {
-                this.send(message);
-            }
-        }
+function create(conf) {
+    switch (conf.type) {
+        case 'SMS':
+            return new SmsWriter(conf.server);
+        case 'D':
+            return new DiscordWriter(conf.server);
+        default:
+            return null;
     }
-
-
-    getGuild() {
-        if (this.guild === undefined) {
-            //this.client.guilds.forEach(guild=>console.log(`${guild.id} : ${guild.name}`));
-            this.guild = this.client.guilds.find("id", this.conf.guild);
-        }
-        return this.guild;
-    }
-
-    send(pokemon) {
-        //console.log("Sending message", message);
-        if (false === this.connected) {
-            if (this.messages === undefined) {
-                this.messages = [];
-            }
-            this.messages.push(pokemon);
-            return;
-        }
-
-        if (typeof pokemon === "string") {
-            this.getOrCreateChannel("Divers", "vrac").then(channel => channel.send(pokemon));
-        } else {
-            this.broadcast(pokemon);
-        }
-    }
-
-    broadcast(pokemon) {
-        console.log(`[${pokemon.country}] IV:${pokemon.iv} LVL:${pokemon.lvl} PC:${pokemon.pc}`);
-
-        let entry = getPokedexEntry(pokemon);
-
-        let altChannels = Filter.get(pokemon, entry, RoutingRules);
-        altChannels.forEach(key => {
-            console.log("Broadcast to " + key);
-            this.getOrCreateChannel(RoutingRules[key]["group"], key).then(channel => {
-                channel.send(this.buildMessage(pokemon, entry, RoutingRules[key]["mentions"] || []));
-            });
-        });
-    }
-
-    getDescription(pokemon, entry) {
-        let s;
-        if (entry) {
-            s = `[${entry.Number}] ${entry.NameLocale}`;
-        } else {
-            s = `${pokemon.name}`;
-        }
-
-        s += ` - IV ${pokemon.iv} - PC ${pokemon.pc} - LVL ${pokemon.lvl}`;
-        if (pokemon.template) {
-            s += `\n${pokemon.template}`;
-        }
-        return s;
-    }
-
-    buildMessage(pokemon, entry, mentions) {
-        let embed = new Discord.RichEmbed();
-        //embed.addField("IV", pokemon.iv, true);
-        //embed.addField("Level", pokemon.lvl, true);
-        embed.setTimestamp(new Date());
-
-        if (entry) {
-            //console.log(`Found pokemon ${message.name}`, pokemon);
-//            embed.setAuthor(`[${entry.Number}] ${entry.NameLocale} - IV ${pokemon.iv} - PC ${pokemon.pc} - LVL ${pokemon.lvl}`, `https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`);
-            embed.setThumbnail(`https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`);
-        }
-
-        embed.setDescription(this.getDescription(pokemon, entry));
-
-
-        let location = pokemon.location || "";
-        if (null !== pokemon.url) {
-            embed.setURL(pokemon.url);
-            location += ("" !== location ? "\n\n" : "") + pokemon.url;
-            let rx = /^.*(\d+\.\d+)(?:%2C|,)(\d+\.\d+)$/;
-            let arr = rx.exec(pokemon.url);
-            if (null !== arr) {
-                embed.addField("GPS", `${arr[1]} | ${arr[2]}`);
-            }
-            //embed.setTitle("Afficher sur la carte");
-            //embed.setURL(pokemon.url);
-        }
-
-        if ("" !== location) {
-            embed.addField("Lieu", location);
-        }
-
-        if (pokemon.boosted === true) {
-            embed.addField("Boost météo", "actif");
-        }
-
-        if (pokemon.country !== "fr") {
-            embed.addField("Pays", pokemon.country);
-        }
-
-        if (mentions.length > 0) {
-            embed.addField("Poke", mentions.map(mention => `<@${mention}>`).join(" "));
-        }
-
-        embed.setFooter(`Source: ${pokemon.source}`);
-        return embed;
-    }
-
-    getOrCreateCategory(name) {
-        return new Promise(resolve => {
-            let category = this.categories[name];
-            if (category === undefined) {
-                this.getGuild().createChannel(name, "category").then(channel => {
-                    this.categories[name] = channel;
-                    resolve(channel);
-                });
-            } else {
-                resolve(category);
-            }
-        });
-    }
-
-
-    getOrCreateChannel(category, name) {
-        return new Promise(resolve => {
-            let guild = this.getGuild();
-            this.getOrCreateCategory(category)
-                .then(parent => {
-                    let uniqKey = `${category}$#$${name}`;
-                    let cache = this.channelsCache[uniqKey];
-                    if (cache !== undefined) {
-                        resolve(cache);
-                    } else {
-                        let channel = guild.channels.find(channel => {
-                            return channel.name === name && null !== channel.parentID && channel.parentID === parent.id;
-                        });
-                        if (null === channel) {
-                            guild.createChannel(name).then(channel => {
-                                channel.setParent(parent);
-                                channel.setTopic(`Pokemon selected for ${name}`);
-                                this.channelsCache[uniqKey] = channel;
-                                resolve(channel);
-                            });
-                        } else {
-                            resolve(channel);
-                        }
-                    }
-                })
-        });
-    }
-};
+}
 
 module.exports = {
-    get: function (conf) {
-        switch (conf.type) {
-            case "SMS":
-                return new SmsWriter(conf.server);
-            case "D":
-                return new DiscordWriter(conf.server);
-            default:
-                return null;
-        }
+    get : function(alias) {
+        return writers[alias];
+    },
+    init: function () {
+        config.get('writers').forEach(conf => load(conf));
     }
-}
+};
