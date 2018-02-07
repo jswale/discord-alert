@@ -33,7 +33,7 @@ class DiscordWriter extends DiscordClient {
         return this.guild;
     }
 
-    send(pokemon) {
+    send(pokemon, rule, destination) {
         if (false === this.connected) {
             if (this.messages === undefined) {
                 this.messages = [];
@@ -45,19 +45,14 @@ class DiscordWriter extends DiscordClient {
         if (typeof pokemon === 'string') {
             this.getOrCreateChannel('Divers', 'vrac').then(channel => channel.send(pokemon));
         } else {
-            this.broadcast(pokemon);
+            this.broadcast(pokemon, rule, destination);
         }
     }
 
-    broadcast(pokemon) {
-        Logger.debug(`[${pokemon.country}] IV:${pokemon.iv} LVL:${pokemon.lvl} PC:${pokemon.pc}`);
-
-        let entry = Utils.getPokedexEntry(pokemon);
-        Filter.get(pokemon, entry).forEach(rule => {
-            Logger.debug(`Broadcast to ${rule.group} > ${rule.name}`);
-            this.getOrCreateChannel(rule.group, rule.name).then(channel => {
-                channel.send(DiscordWriter.buildMessage(pokemon, entry, rule.mentions));
-            });
+    broadcast(pokemon, entry, destination) {
+        Logger.debug(`Broadcast to ${destination.group} > ${destination.name}`);
+        this.getOrCreateChannel(destination.group, destination.name).then(channel => {
+            channel.send(DiscordWriter.buildMessage(pokemon, entry, destination.mentions));
         });
     }
 

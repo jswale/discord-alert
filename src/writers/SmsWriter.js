@@ -10,9 +10,8 @@ class SmsWriter {
     start() {
     }
 
-    buildMessage(pokemon) {
+    buildMessage(pokemon, entry) {
         let s;
-        let entry = Utils.getPokedexEntry(pokemon);
 
         if (entry) {
             s = `[${entry.Number}] ${entry.NameLocale}`;
@@ -26,8 +25,8 @@ class SmsWriter {
         return s;
     }
 
-    send(pokemon) {
-        let url = this.conf.url.replace(/\{MESSAGE\}/, this.buildMessage(pokemon));
+    send(pokemon, entry, destination) {
+        let url = this.conf.url.replace(/\{MESSAGE\}/, this.buildMessage(pokemon, entry));
         rp(url).then(() => Logger.debug('SMS sent')).catch((reason) => Logger.error(`Error sending SMS : ${reason}`));
     }
 }

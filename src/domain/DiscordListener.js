@@ -2,14 +2,14 @@
 
 const DiscordClient = require('./DiscordClient');
 const MessageParser = require('../MessageParser');
+const Writer = require('../Writer');
 const Logger = require('../helpers/Logger');
 
 module.exports = class DiscordListener extends DiscordClient {
 
-    constructor(conf, channels, writer) {
+    constructor(conf, channels) {
         super(conf);
         this.channels = channels;
-        this.writer = writer;
     }
 
     onConnection() {
@@ -22,7 +22,11 @@ module.exports = class DiscordListener extends DiscordClient {
                 return;
             }
 
-            MessageParser.parse(message, this.channels[channelId]).then(pokemon => this.writer.send(pokemon)).catch(reason => Logger.warn(reason));
+            MessageParser.parse(message, this.channels[channelId]).then(pokemon => {
+                Writer.broadcast(pokemon);
+            }).catch(reason => {
+                Logger.warn(`Unable to parse message`, {reason: reason, message: message});
+            });
         });
     }
 };

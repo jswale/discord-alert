@@ -6,6 +6,7 @@ const Logger = require('./helpers/Logger');
 const Utils = require('./helpers/Utils');
 const DiscordWriter = require('./writers/DiscordWriter');
 const SmsWriter = require('./writers/SmsWriter');
+const Filter = require('./Filter');
 const config = require('./helpers/Config');
 
 
@@ -18,6 +19,7 @@ function load(conf) {
         writers[conf.alias] = writer;
         writer.start();
     }
+    return writer;
 }
 
 function create(conf) {
@@ -31,11 +33,32 @@ function create(conf) {
     }
 }
 
+function broadcast(pokemon) {
+    Logger.debug(`[${pokemon.country}] IV:${pokemon.iv} LVL:${pokemon.lvl} PC:${pokemon.pc}`);
+
+    let entry = Utils.getPokedexEntry(pokemon);
+    Filter.get(pokemon, entry).forEach(rule => {
+        rule.destinations.forEach(destination => {
+            let writer = writers[destination.writer];
+            if(writer) {
+                Logger.debug(`Broadcast using writer ${destination.writer}`);
+                writer.send(pokemon, entry, destination);
+            } else {
+                Logger.warn(`Unable to find writer ${destination.writer}`);
+            }
+        })
+    });
+}
+
+
 module.exports = {
-    get : function(alias) {
+    broadcast : broadcast,
+    get: function (alias) {
         return writers[alias];
     },
     init: function () {
-        config.get('writers').forEach(conf => load(conf));
+        Logger.info(`Loading writers`);
+        config.get('writers').map(conf => load(conf));
+        Logger.info(`> done`);
     }
 };

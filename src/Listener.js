@@ -13,7 +13,7 @@ function load(conf) {
 }
 
 function create(conf) {
-    return new DiscordListener(conf.server, conf.channels, Writer.get(conf.writer));
+    return new DiscordListener(conf.server, conf.channels);
 }
 
 module.exports = {
