@@ -39,13 +39,17 @@ function broadcast(pokemon) {
     let entry = Utils.getPokedexEntry(pokemon);
     Filter.get(pokemon, entry).forEach(rule => {
         rule.destinations.forEach(destination => {
-            let writer = writers[destination.writer];
-            if(writer) {
-                Logger.debug(`Broadcast using writer ${destination.writer}`);
-                writer.send(pokemon, entry, destination);
-            } else {
-                Logger.warn(`Unable to find writer ${destination.writer}`);
-            }
+            let list =  Array.isArray(destination.writer) ? destination.writer : [destination.writer];
+            list.forEach(key=>{
+                let writer = writers[key];
+                if(writer) {
+                    //Logger.debug(`Broadcast using writer ${key}`);
+                    writer.send(pokemon, entry, destination);
+                } else {
+                    Logger.warn(`Unable to find writer ${key}`);
+                }
+
+            })
         })
     });
 }

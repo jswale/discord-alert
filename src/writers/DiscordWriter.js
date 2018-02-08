@@ -23,6 +23,42 @@ class DiscordWriter extends DiscordClient {
                 this.send(message);
             }
         }
+
+        this.reply();
+    }
+
+    reply() {
+        this._replyTo = {};
+        // Listener
+        this.client.on('message', (message) => {
+            let channelId = message.channel.id;
+
+            if (this._replyTo[channelId] === undefined) {
+                // Ignore message
+                return;
+            }
+
+            switch (message.content) {
+                case '!c':
+                case '!clear':
+                    console.log("Delete data from channel", message.channel.id, message.channel.name);
+                    message.channel.fetchMessages().then(entries => {
+                        entries.forEach(entry => {
+                            entry.delete()
+                        });
+                    }).catch(reason => console.log("Unable to fetch messages"));
+                    break;
+
+                case '!h':
+                case '!help':
+                    message.channel.send(`**Usage**:
+!h[elp] afficher l'aide
+!c[lear] pour nettoyer le salon des vieux messages
+`);
+                    break;
+            }
+
+        });
     }
 
 
@@ -50,8 +86,9 @@ class DiscordWriter extends DiscordClient {
     }
 
     broadcast(pokemon, entry, destination) {
-        Logger.debug(`Broadcast to ${destination.group} > ${destination.name}`);
+        //Logger.debug(`Broadcast to ${destination.group} > ${destination.name}`);
         this.getOrCreateChannel(destination.group, destination.name).then(channel => {
+            this._replyTo[channel.id] = true;
             channel.send(DiscordWriter.buildMessage(pokemon, entry, destination.mentions));
         });
     }

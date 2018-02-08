@@ -62,7 +62,7 @@ class Parser {
                     getCoords(arr[7]).then(gps => {
                         let url;
                         if (gps) {
-                            Logger.debug("Coordonnates extracted", {gps: gps, src: arr[7]});
+                            //Logger.debug("Coordonnates extracted", {gps: gps, src: arr[7]});
                             url = `https://www.google.com/maps?q=${gps[0]},${gps[1]}`;
                         }
                         this.cache[arr[7]] = true;
