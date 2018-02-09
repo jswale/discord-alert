@@ -172,6 +172,9 @@ class DiscordWriter extends DiscordClient {
                 let arr = rx.exec(pokemon.url);
                 if (null !== arr) {
                     description += `\n\nGPS: ${arr[1]} | ${arr[2]}`;
+                    if(entry) {
+                        embed.setURL(`http://pog.ovh/cc/?lat=${arr[1]}&lon=${arr[2]}&pkm_id=${parseInt(entry.Number,10)}`);
+                    }
                 }
             }
         }
