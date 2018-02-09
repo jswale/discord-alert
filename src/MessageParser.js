@@ -12,13 +12,17 @@ module.exports = {
         parsers[alias] = parser;
     },
     parse: function (message, alias) {
-        return new Promise((resolve, error) => {
+        return new Promise((resolve, reject) => {
             let parser = parsers[alias];
             if (parser === undefined) {
                 Logger.debug(`format#${message.id}`);
                 resolve(`(${message.channel.name}): ${message.content.replace(/\n/g, ' ')}`);
             } else {
-                parser.parse(message).then(pokemon => resolve(pokemon)).catch(reason => error(reason));
+                try {
+                    parser.parse(message).then(pokemon => resolve(pokemon)).catch(reason => reject(reason));
+                } catch(ex) {
+                    reject(ex);
+                }
             }
         });
     },
