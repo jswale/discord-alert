@@ -1,2 +1,6 @@
 .gitignore
+.idea
+*.iml
 node_modules
+data/config.json
+data/routes.json
