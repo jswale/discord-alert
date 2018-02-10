@@ -5,6 +5,10 @@ const MessageParser = require('./src/MessageParser');
 const Writer = require('./src/Writer');
 const Listener = require('./src/Listener');
 
-MessageParser.init();
-Writer.init();
-Listener.init();
+try {
+    MessageParser.init();
+    Writer.init();
+    Listener.init();
+} catch(ex) {
+    console.log('Error in app', ex);
+}
