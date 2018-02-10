@@ -5,3 +5,4 @@ node_modules
 data/config.json
 data/routes.json
 logs/*
+data/routes/*.json

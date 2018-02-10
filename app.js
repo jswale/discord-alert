@@ -4,8 +4,10 @@
 const MessageParser = require('./src/MessageParser');
 const Writer = require('./src/Writer');
 const Listener = require('./src/Listener');
+const Router = require('./src/Router');
 
 try {
+    Router.init();
     MessageParser.init();
     Writer.init();
     Listener.init();

@@ -1,7 +1,7 @@
 'use strict';
 
 const Logger = require('./helpers/Logger');
-const RoutingRules = require('../data/routes.json');
+const Router = require('./Router');
 
 function checkCondition(userFilter, pokemon, key) {
     const comparators = userFilter[key];
@@ -73,7 +73,7 @@ function isInList(userFilter, pokemon, key) {
 
 module.exports = {
     get: function (entry, pokedex) {
-        return RoutingRules.filter(rule => {
+        return Router.getRules().filter(rule => {
             return rule.filters.some(filter => {
                 if (pokedex && !isPokemonListed(filter.pokemons, pokedex)) {
                     //Logger.debug(`[filter] Pokemon is not watched`);
