@@ -44,7 +44,7 @@ class DiscordWriter extends DiscordClient {
                     console.log("Delete data from channel", message.channel.id, message.channel.name);
                     message.channel.fetchMessages().then(entries => {
                         entries.forEach(entry => {
-                            entry.delete()
+                            entry.delete().catch(reason => Logger.warn("Unable to delete message", {reason:reason, message: message.id}))
                         });
                     }).catch(reason => console.log("Unable to fetch messages"));
                     break;
@@ -172,8 +172,8 @@ class DiscordWriter extends DiscordClient {
                 let arr = rx.exec(pokemon.url);
                 if (null !== arr) {
                     description += `\n\nGPS: ${arr[1]} | ${arr[2]}`;
-                    if(entry) {
-                        embed.setURL(`http://pog.ovh/cc/?lat=${arr[1]}&lon=${arr[2]}&pkm_id=${parseInt(entry.Number,10)}`);
+                    if (entry) {
+                        embed.setURL(`http://pog.ovh/cc/?lat=${arr[1]}&lon=${arr[2]}&pkm_id=${parseInt(entry.Number, 10)}`);
                     }
                 }
             }

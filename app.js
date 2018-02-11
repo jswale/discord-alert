@@ -5,9 +5,11 @@ const MessageParser = require('./src/MessageParser');
 const Writer = require('./src/Writer');
 const Listener = require('./src/Listener');
 const Router = require('./src/Router');
+const WebServer = require('./src/WebServer');
 
 try {
     Router.init();
+    WebServer.init();
     MessageParser.init();
     Writer.init();
     Listener.init();

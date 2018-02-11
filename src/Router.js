@@ -27,9 +27,27 @@ class Router {
     }
 
     load(file) {
-        Logger.debug(`Loading ${file} routing rules`);
+        Logger.debug(`Loading ${file} routing file`);
         this.cache[file] = require(`.${folder}/${file}`);
+        this.buildRules();
+    }
+
+    buildRules() {
         this.rules = [].concat.apply([], Object.values(this.cache));
+    }
+
+    saveRule (prefix, json) {
+        let file = `${prefix}.routes.json`;
+        Logger.debug(`Saving ${file} routing file`);
+        fs.writeFileSync(__dirname + `/.${folder}/${file}`, json);
+        this.cache[file] = json;
+        this.buildRules();
+    }
+
+    getRule(prefix) {
+        let file = `${prefix}.routes.json`;
+        Logger.debug(`Searching for ${file} routing file`);
+        return this.cache[file];
     }
 
     getRules() {
