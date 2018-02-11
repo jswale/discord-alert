@@ -40,7 +40,7 @@ class Router {
         let file = `${prefix}.routes.json`;
         Logger.debug(`Saving ${file} routing file`);
         fs.writeFileSync(__dirname + `/.${folder}/${file}`, json);
-        this.cache[file] = json;
+        this.cache[file] = JSON.parse(json);
         this.buildRules();
     }
 
