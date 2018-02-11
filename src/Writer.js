@@ -1,7 +1,5 @@
 'use strict';
 
-const rp = require('request-promise');
-
 const Logger = require('./helpers/Logger');
 const Utils = require('./helpers/Utils');
 const DiscordWriter = require('./writers/DiscordWriter');

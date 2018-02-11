@@ -1,9 +1,7 @@
 const Discord = require('discord.js');
 
 const DiscordClient = require('../domain/DiscordClient');
-const Utils = require('../helpers/Utils');
 const Logger = require('../helpers/Logger');
-const Filter = require('../Filter');
 
 class DiscordWriter extends DiscordClient {
 
@@ -44,7 +42,10 @@ class DiscordWriter extends DiscordClient {
                     console.log("Delete data from channel", message.channel.id, message.channel.name);
                     message.channel.fetchMessages().then(entries => {
                         entries.forEach(entry => {
-                            entry.delete().catch(reason => Logger.warn("Unable to delete message", {reason:reason, message: message.id}))
+                            entry.delete().catch(reason => Logger.warn("Unable to delete message", {
+                                reason: reason,
+                                message: message.id
+                            }))
                         });
                     }).catch(reason => console.log("Unable to fetch messages"));
                     break;
@@ -122,7 +123,7 @@ class DiscordWriter extends DiscordClient {
                         });
                         if (null === channel) {
                             guild.createChannel(name).then(channel => {
-                                channel.setParent(parent);
+                                channel.setParent(parent).catch(reason => Logger.warn(`Unable to move ${channel.name} to ${parent.name}`));
                                 channel.setTopic(`Pokemon selected for ${name}`);
                                 this.channelsCache[uniqKey] = channel;
                                 resolve(channel);

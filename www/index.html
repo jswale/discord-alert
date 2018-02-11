@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <style type="text/css">
         body {
-            font-family: Roboto;
+            font-family: Roboto,sans-serif;
         }
 
         fieldset {
@@ -67,7 +67,7 @@
         }
 
         .rules {
-            margin: 10px 0px;
+            margin: 10px 0;
 
         }
 
@@ -121,45 +121,50 @@
             load: function () {
                 var self = this;
                 var name = $('[name="rule-name"]').val();
-                $.get("/serverSide/rules/" + name, function (rules) {
-                    self.render(rules);
-                })
+                if (name) {
+                    $.get("/serverSide/rules/" + name, function (rules) {
+                        self.render(rules);
+                    })
+                }
             },
 
             render: function (rules) {
                 var self = this;
-                var ctn = $("#rules").empty();
-
-                $.each(rules, function (ruleId, rule) {
-                    self.addRule(rule);
-                })
+                $("#rules").empty();
+                if (rules) {
+                    $.each(rules, function (ruleId, rule) {
+                        self.addRule(rule);
+                    });
+                } else {
+                    self.addRule();
+                }
             },
 
             save: function () {
                 var self = this;
                 var name = $('[name="rule-name"]').val();
                 var json = [];
-                $("#rules > .rule").each(function (i, rule) {
+                $('.rule').each(function (i, rule) {
                     var entry = {
                         "destinations": self.getGroupValue($(rule), ".destination", ['writer', 'name', 'group']),
                         "filters": self.getGroupValue($(rule), ".filter", ['pokemons', 'country', 'excludePokemons', 'pc', 'lvl', 'iv'])
                     };
                     json.push(entry);
                 });
-                $.post("/serverSide/rules/" + name, {json : JSON.stringify(json)}, function () {
+                $.post("/serverSide/rules/" + name, {json: JSON.stringify(json)}, function () {
                     alert("Sauvegardé");
                 })
 
             },
 
-            getGroupValue:function(ctn, selector, keys) {
+            getGroupValue: function (ctn, selector, keys) {
                 var self = this;
                 return ctn.find(selector).map(function (i, group) {
                     group = $(group);
                     var entry = {};
-                    $.each(keys, function(i,key){
+                    $.each(keys, function (i, key) {
                         var value = self.getFieldValue(group, key);
-                        if(value) {
+                        if (value) {
                             entry[key] = value;
                         }
                     })
@@ -170,14 +175,14 @@
             getFieldValue: function (ctn, name) {
                 var field = ctn.find("input[name='" + name + "']");
                 var value = field.val().trim();
-                if(value === '') {
+                if (value === '') {
                     return null;
                 }
-                var values = $.map(value.split(','), function(v){
+                var values = $.map(value.split(','), function (v) {
                     v = v.trim();
-                    return $.isNumeric(v) ? parseInt(v,10) : v;
+                    return $.isNumeric(v) ? parseInt(v, 10) : v;
                 });
-                return values.length == 1 ? values[0] : values;
+                return values.length === 1 ? values[0] : values;
             },
 
             addRule: function (rule) {
@@ -189,7 +194,7 @@
                         $('<legend/>').text('Règle'),
                         $('<div/>'),
                         $('<button/>').addClass('btn btn-danger').text('Supprimer cette règle').click(function () {
-                            if (ruleCtn.siblings().length == 0) {
+                            if (ruleCtn.siblings().length === 0) {
                                 self.addRule();
                             }
                             ruleCtn.remove();
@@ -261,7 +266,7 @@
                             return self.getBasicField(data, field.key, field);
                         }),
                         $('<button/>').addClass('btn btn-danger').text('X').click(function () {
-                            if (group.siblings().length == 0) {
+                            if (group.siblings().length === 0) {
                                 self.addGroup(ctnGroup, def);
                             }
                             group.remove();

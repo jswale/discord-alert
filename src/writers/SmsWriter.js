@@ -1,5 +1,4 @@
-
-const Utils = require('../helpers/Utils');
+const rp = require('request-promise');
 const Logger = require('../helpers/Logger');
 
 class SmsWriter {
@@ -25,7 +24,7 @@ class SmsWriter {
         return s;
     }
 
-    send(pokemon, entry, destination) {
+    send(pokemon, entry) {
         let url = this.conf.url.replace(/\{MESSAGE\}/, this.buildMessage(pokemon, entry));
         rp(url).then(() => Logger.debug('SMS sent')).catch((reason) => Logger.error(`Error sending SMS : ${reason}`));
     }

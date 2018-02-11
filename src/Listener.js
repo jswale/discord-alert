@@ -2,7 +2,6 @@
 
 const Logger = require('./helpers/Logger');
 const config = require('./helpers/Config');
-const Writer = require('./Writer');
 const DiscordListener = require('./domain/DiscordListener');
 
 

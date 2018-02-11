@@ -6,7 +6,7 @@ const Pokemon = require('../domain/Pokemon');
 
 class Parser {
     parse(message) {
-        return new Promise((resolve, error) => {
+        return new Promise((resolve) => {
             //Logger.debug(`livePokeMapParis#${message.id}`, message.content);
             // 1 : postalCode
             // 2 : name
@@ -27,7 +27,7 @@ class Parser {
                 Logger.debug(`livePokeMapParis#${message.id} : ${message.content}`);
                 Logger.warn('LPMP: Unable to parse message', {message: message.content});
                 //Formatter.format(message);
-                resolve('Unable to parse message');
+                resolve('LPMP: Unable to parse message');
             }
         });
     }

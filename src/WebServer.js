@@ -1,10 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs');
 const Logger = require('./helpers/Logger');
 const Router = require('./Router');
-
-let folder = __dirname +'/../data/routes';
 
 class WebServer {
 
@@ -20,7 +17,13 @@ class WebServer {
         let router = express.Router();
 
         router.get('/rules/:name', (req, res) => {
-            res.json(Router.getRule(req.params.name));
+            let rule = Router.getRule(req.params.name);
+            if(rule) {
+                res.json(rule);
+            } else {
+                res.send(false);
+            }
+
         });
         router.post('/rules/:name', (req, res) => {
             let json = req.body.json;

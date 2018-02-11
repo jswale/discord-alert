@@ -87,9 +87,8 @@ The listeners are defined in the array named **listeners** and are a collection 
 }
 ```
 
-A listener contains 3 parts :
+A listener contains 2 parts :
 * the connexion information to the client `server`
-* the alias of the `writer` defined above
 * the list of `channels` we want to listen
 
 #### Server part
@@ -131,3 +130,97 @@ Associated to the channel_id, you have to define a formater. The current formate
 * PDX100
 
 You can add more support for you own channels according to the format used to publish messages 
+
+## Manage routes
+
+The folder `data/routes` contains the routes used to broadcast the messages.
+
+The route files can be generated using the generator available on http://localhost:3000 and are saved using the suffix `.routes.json`
+
+A route file is a collection or rules defined as
+
+```json
+{
+  "destinations" : [],
+  "filters" : []
+}
+```
+
+### Route destination
+
+A message can be broadcast to multiple writers (ak destinations). For example to a discord channel and via SMS.
+
+#### Discord writer
+
+In order to user a discord writer you can set the destination as below :
+ 
+ ```json
+ {
+   "writer" : ["main"],
+   "name" : "channelName",
+   "group" : "categoryName"
+ }
+ ```
+ 
+You can use a single writer using `'main"` or a collection or writers using `['main"]` where `main` is the alias of the writer as describe before.
+
+The `name` has to be one word and written in lowercase
+The `group` can be a sentance (ex: `Per user`).
+
+#### Sms writer
+
+In order to user a sms writer you only have to set the writer :
+ 
+ ```json
+ {
+   "writer" : ["sms"]
+ }
+ ```
+ 
+The writer `sms` is the alias of the writer as describe before.
+
+### Route filters
+
+A route contains a collection of filters. You can filter the messages by setting one or multiple filters :
+* **pokemons**: the list of pokemons number you want to match. Use `"*"` for matching every pokemon, or `[1,2,3]` for specific pokemon numbers
+* **excludePokemons**: the list of pokemons number you want to exclude. Use `[3,4]` for specific pokemon numbers
+* **lvl**: the level of the pokemon. Use `30` for matching every pokemon lvl 30 or `[30,35]` for pokemon having a level between 30 and 35.
+* **iv**: the IV of the pokemon. Use `100` for matching every pokemon IV 100 or `[90,100]` for pokemon having a IV between 90 and 100.
+* **pc**: the PC of the pokemon. Use `2000` for matching every pokemon PC 2000 or `[2000,9999]` for pokemon having a PC greater than 2000.
+* **country**: the coutry of origin of the pokemon. Use `['fr']` for matching every pokemon from France or `['fr', 'us"]` for pokemon from France or USA. 
+
+*Example for IV100 LVL30+*
+ ```json
+{
+  "pokemons": "*",
+  "lvl": [30,35],
+  "iv": 100
+}
+ ```
+
+*Example for IV100 LVL35 from France*
+ ```json
+{
+  "pokemons": "fr",
+  "lvl": 35,
+  "iv": 100
+}
+ ```
+
+### Full example
+[
+  {
+    "destinations" :[{
+      "writer" : ["main"],
+      "name":"debug",
+      "group": "Debug"
+    }],
+    "filters": [
+      {
+        "pokemons": "*",
+        "lvl": [1,35],
+        "iv": 100
+      }
+    ]
+  }
+]

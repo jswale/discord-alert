@@ -76,7 +76,7 @@ class Parser {
             else {
                 Logger.warn("PDX100: Unable to parse message", {content: message.content});
                 //Formatter.format(message);
-                error("Unable to parse message");
+                error("PDX100: Unable to parse message");
             }
         });
     }
