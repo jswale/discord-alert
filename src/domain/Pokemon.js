@@ -1,18 +1,20 @@
 "use strict";
 
 class Pokemon {
-    constructor(source, name, iv, lvl, pc, boosted, template, despawn, country, location, url) {
-        this.source = source;
-        this.name = name;
-        this.iv = parseInt(iv);
-        this.lvl = parseInt(lvl);
-        this.pc = parseInt(pc);
-        this.boosted = boosted;
-        this.template = template;
-        this.despawn = despawn;
-        this.country = country;
-        this.location = location;
-        this.url = url;
+    constructor(def) {
+        this.source = def.source;
+        this.name = def.name;
+        this.iv = def.iv;
+        this.lvl = def.lvl;
+        this.pc = def.pc;
+        this.boosted = def.boosted;
+        this.template = def.template;
+        this.despawn = def.despawn;
+        this.country = def.country;
+        this.location = def.location;
+        this.lat = def.lat;
+        this.lng = def.lng;
+        this.url = def.url;
     }
 }
 

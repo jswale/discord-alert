@@ -60,13 +60,27 @@ class Parser {
             if (null !== arr) {
                 if (this.cache[arr[7]] === undefined) {
                     getCoords(arr[7]).then(gps => {
-                        let url;
+                        let lat;
+                        let lng;
                         if (gps) {
-                            //Logger.debug("Coordonnates extracted", {gps: gps, src: arr[7]});
-                            url = `https://www.google.com/maps?q=${gps[0]},${gps[1]}`;
+                            lat = gps[0];
+                            lng = gps[1];
                         }
                         this.cache[arr[7]] = true;
-                        resolve(new Pokemon("Pokedex100", arr[2], arr[3], arr[5], arr[4], false, arr[6], null, arr[1], null, url));
+
+                        resolve(new Pokemon({
+                            source: "Pokedex100",
+                            name: arr[2],
+                            iv: parseInt(arr[3], 10),
+                            lvl: parseInt(arr[5], 10),
+                            pc: parseInt(arr[4], 10),
+                            template: arr[6],
+                            country: arr[1],
+                            url: arr[7],
+                            lat: lat,
+                            lng: lng
+                        }));
+
                     }).catch(reason => error(reason));
                 } else {
                     Logger.debug("PDX100: Duplicate entry for ", {url: arr[7]});
@@ -76,7 +90,7 @@ class Parser {
             else {
                 Logger.warn("PDX100: Unable to parse message", {content: message.content});
                 //Formatter.format(message);
-                error("PDX100: Unable to parse message");
+                error("Unable to parse message");
             }
         });
     }

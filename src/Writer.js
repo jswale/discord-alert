@@ -36,6 +36,7 @@ function broadcast(pokemon) {
 
     let entry = Utils.getPokedexEntry(pokemon);
     Filter.get(pokemon, entry).forEach(rule => {
+        //Logger.debug(` > Found matching rule`, {rule:rule});
         rule.destinations.forEach(destination => {
             let list = Array.isArray(destination.writer) ? destination.writer : [destination.writer];
             list.forEach(key => {

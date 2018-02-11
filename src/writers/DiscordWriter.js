@@ -165,12 +165,15 @@ class DiscordWriter extends DiscordClient {
             description += `\n\n${pokemon.location}`;
         }
 
-        if (pokemon.url) {
+        if(pokemon.lat && pokemon.lng) {
+            description += `\n\nhttps://www.google.com/maps?q=${pokemon.lat},${pokemon.lng}`;
+            embed.setURL(`http://pog.ovh/cc/?lat=${pokemon.lat}&lon=${pokemon.lng}&pkm_id=${parseInt(entry.Number, 10)}`);
+        } else if(pokemon.url) {
             description += `\n\n${pokemon.url}`;
             embed.setURL(pokemon.url);
             {
                 let rx = /^.*?(\d+\.\d+)(?:%2C|,)(\d+\.\d+)$/;
-                let arr = rx.exec(pokemon.url);
+                let arr = rx.exec(url);
                 if (null !== arr) {
                     description += `\n\nGPS: ${arr[1]} | ${arr[2]}`;
                     if (entry) {

@@ -75,6 +75,7 @@ module.exports = {
     get: function (entry, pokedex) {
         return Router.getRules().filter(rule => {
             return rule.filters.some(filter => {
+
                 if (pokedex && !isPokemonListed(filter.pokemons, pokedex)) {
                     //Logger.debug(`[filter] Pokemon is not watched`);
                     return false;
@@ -99,6 +100,8 @@ module.exports = {
                     //Logger.debug(`[filter] Missmatch country`);
                     return false;
                 }
+
+                Logger.debug(` > Matching for ${entry.name} for ${rule.destinations[0].writer} > ${rule.destinations[0].group} > ${rule.destinations[0].name}`);
 
                 return true;
 
