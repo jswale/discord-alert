@@ -10,11 +10,9 @@ const WebServer = require('./src/WebServer');
 try {
     Router.init();
     WebServer.init();
-    /*
     MessageParser.init();
     Writer.init();
     Listener.init();
-    */
 } catch(ex) {
     console.log('Error in app', ex);
 }
