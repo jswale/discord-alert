@@ -107,7 +107,7 @@
 <body>
 <fieldset>
     <legend>Charger une règle</legend>
-    <input type="text" class="form-control" name="rule-name" placeholder="Nom de la règle" value="thaliondur">
+    <input type="text" class="form-control" name="rule-name" placeholder="Nom de la règle" value="">
     <button type="button" class="btn btn-primary" onclick="Ruler.load();">Charger</button>
 </fieldset>
 <div id="rules" class="rules"></div>
@@ -288,7 +288,7 @@
             }
         };
 
-        Ruler.load();
+        Ruler.addRule();
         document.Ruler = Ruler;
     });
 </script>
