@@ -4,6 +4,7 @@ const Logger = require('./helpers/Logger');
 const Utils = require('./helpers/Utils');
 const DiscordWriter = require('./writers/DiscordWriter');
 const SmsWriter = require('./writers/SmsWriter');
+const ApiWriter = require('./writers/ApiWriter');
 const Filter = require('./Filter');
 const config = require('./helpers/Config');
 
@@ -24,6 +25,8 @@ function create(conf) {
     switch (conf.type) {
         case 'SMS':
             return new SmsWriter(conf.server);
+        case 'API':
+            return new ApiWriter(conf.server);
         case 'D':
             return new DiscordWriter(conf.server);
         default:
