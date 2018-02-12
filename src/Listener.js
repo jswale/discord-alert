@@ -2,17 +2,26 @@
 
 const Logger = require('./helpers/Logger');
 const config = require('./helpers/Config');
-const DiscordListener = require('./domain/DiscordListener');
+const DiscordListener = require('./listeners/DiscordListener');
+const FakeListener = require('./listeners/FakeListener');
 
 
 function load(conf) {
     Logger.info(`Creating listener`);
     let listener = create(conf);
-    listener.start();
+    if(listener) {
+        listener.start();
+    }
 }
 
 function create(conf) {
-    return new DiscordListener(conf.server, conf.channels);
+    switch (conf.type) {
+        case "FAKE":
+            return new FakeListener(conf.server);
+        case "DISCORD":
+        default:
+            return new DiscordListener(conf.server, conf.channels);
+    }
 }
 
 module.exports = {

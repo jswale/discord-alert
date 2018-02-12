@@ -5,6 +5,7 @@ const Utils = require('./helpers/Utils');
 const DiscordWriter = require('./writers/DiscordWriter');
 const SmsWriter = require('./writers/SmsWriter');
 const ApiWriter = require('./writers/ApiWriter');
+const ConsoleWriter = require('./writers/ConsoleWriter');
 const Filter = require('./Filter');
 const config = require('./helpers/Config');
 
@@ -14,7 +15,7 @@ const writers = {};
 function load(conf) {
     Logger.info(`Creating writer ${conf.alias}`);
     let writer = create(conf);
-    if (null !== writer) {
+    if (writer) {
         writers[conf.alias] = writer;
         writer.start();
     }
@@ -23,14 +24,15 @@ function load(conf) {
 
 function create(conf) {
     switch (conf.type) {
+        case 'CONSOLE':
+            return new ConsoleWriter();
         case 'SMS':
             return new SmsWriter(conf.server);
         case 'API':
             return new ApiWriter(conf.server);
-        case 'D':
-            return new DiscordWriter(conf.server);
+        case 'DISCORD':
         default:
-            return null;
+            return new DiscordWriter(conf.server);
     }
 }
 

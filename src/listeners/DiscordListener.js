@@ -1,6 +1,6 @@
 'use strict';
 
-const DiscordClient = require('./DiscordClient');
+const DiscordClient = require('../domain/DiscordClient');
 const MessageParser = require('../MessageParser');
 const Writer = require('../Writer');
 const Logger = require('../helpers/Logger');

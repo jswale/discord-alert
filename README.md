@@ -17,13 +17,15 @@ The writers are defined in the array named **writers**
 A **writer** must contain an alias (referenced in a listener), a type and a node server for the connexion informations. 
 
 The type allowed are :
-* D : for Discord
+* DISCORD : for Discord (by default is node `type` is missing)
 * SMS : for sms
+* API : for api
+* CONSOLE : for logging in the console
 
 ```json
 {
   "alias" : "writerAlias",
-  "type" : "D",
+  "type" : "DISCORD",
   "server" : {
   }  
 }
@@ -77,6 +79,19 @@ Some cellphone providers allow to send SMS using some REST API in GET. You must 
 }
 ```
 
+
+#### Api Writer
+
+You can send the pokemon object to an remote API.
+ 
+```json
+{
+  "server" : {
+    "url" : "https://api.website.com"
+  }  
+}
+```
+
 ### Listeners
 
 The listeners are defined in the array named **listeners** and are a collection of channel accessible from an account.
@@ -87,11 +102,30 @@ The listeners are defined in the array named **listeners** and are a collection 
 }
 ```
 
-A listener contains 2 parts :
+A listener contains 3 parts :
+* the `type` of listener
 * the connexion information to the client `server`
 * the list of `channels` we want to listen
 
-#### Server part
+#### Type part
+
+A **listener** must contain a `type`. 
+
+The type allowed are :
+* DISCORD : for Discord (by default is node `type` is missing)
+* FAKE : for fake data
+
+```json
+{
+  "alias" : "writerAlias",
+  "type" : "DISCORD",
+  "server" : {
+  }  
+}
+```
+
+
+#### Server part (Discord)
 The same way you can configure the connexion with the writer are available for the listeners (without the guild information).
 
 Using the private token (of a bot or an user) :
@@ -109,6 +143,17 @@ Or using login/password :
   "server" : {
     "login" : "email@client.com",
     "password" : "myPassword"
+  }  
+}
+```
+
+#### Server part (Fake)
+If you want to check some fake data you can set the names of the pokemons in the `names` node.
+
+```json
+{
+  "server" : {
+    "names" : ["Tylton"]
   }  
 }
 ```
