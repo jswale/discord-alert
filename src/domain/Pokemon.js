@@ -1,4 +1,5 @@
 "use strict";
+const Utils = require('../helpers/Utils');
 
 class Pokemon {
     constructor(def) {
@@ -15,6 +16,8 @@ class Pokemon {
         this.lat = def.lat;
         this.lng = def.lng;
         this.url = def.url;
+
+        this.pokedexEntry = Utils.getPokedexEntry(this);
     }
 }
 
