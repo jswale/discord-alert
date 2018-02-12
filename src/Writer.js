@@ -39,7 +39,7 @@ function create(conf) {
 function broadcast(pokemon) {
     Logger.debug(`[${pokemon.country}] ${pokemon.name} IV:${pokemon.iv} LVL:${pokemon.lvl} PC:${pokemon.pc}`);
 
-    let entry = Utils.getPokedexEntry(pokemon);
+    let entry = pokemon.pokedexEntry;
     Filter.get(pokemon, entry).forEach(rule => {
         //Logger.debug(` > Found matching rule`, {rule:rule});
         rule.destinations.forEach(destination => {
