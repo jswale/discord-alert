@@ -17,4 +17,5 @@ function get(email, password) {
         });
     });
 }
+
 module.exports = {get};

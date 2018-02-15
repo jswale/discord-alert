@@ -39,24 +39,24 @@ function getCoords(url) {
     });
 }
 
+const extractor = new RegExp(/\:flag_(.{2})\:\s+(?:\(\d+\:\d+\))?\s+\*+([^\*]+)\*+\s+<[^>]*>\s+IV(\d+)\*+\s+CP(\d+)\s+L(\d+)\*+[^\[]*(?:\[([^\]]*)\].*)?.*?\n.*<(https:\/\/pokedex100.com[^>]*)>/);
+// 1 : country
+// 2 : name
+// 3 : IV
+// 4 : PC
+// 5 : LVL
+// 6 : template
+// 7 : url
+
 class Parser {
     constructor() {
         this.cache = {};
     }
 
     parse(message) {
-        return new Promise((resolve, error) => {
+        return new Promise((resolve, reject) => {
             //Logger.debug(`Pokedex100#${message.id}`);
-            // :flag_us:  **Wurmple** <a:265:396700075344003072>  IV100** CP437 L31** ♂ [Bug Bite/Struggle] WXL -  *Glen Allen*  <@288375537410375681>\nClick to get coord <https://pokedex100.com/?d=DswbT7RBDn3vW>\n\nSupport us >> <https://www.patreon.com/pokedex100>
-            // 1 : country
-            // 2 : name
-            // 3 : IV
-            // 4 : PC
-            // 5 : LVL
-            // 6 : template
-            // 7 : url
-            let rx = /\:flag_(.{2})\:\s+(?:\\d+\:\d+\\s+)?\*+([^\*]+)\*+\s+<[^>]*>\s+IV(\d+)\*+\s+CP(\d+)\s+L(\d+)\*+[^\[]*(?:\[([^\]]*)\].*)?<(https:\/\/pokedex100.com[^>]*)>/g;
-            let arr = rx.exec(message.content.replace(/\n/g, " "));
+            let arr = extractor.exec(message.content);
             if (null !== arr) {
                 if (this.cache[arr[7]] === undefined) {
                     getCoords(arr[7]).then(gps => {
@@ -81,19 +81,23 @@ class Parser {
                             lng: lng
                         }));
 
-                    }).catch(reason => error(reason));
+                    }).catch(reason => reject(reason));
                 } else {
                     Logger.debug("PDX100: Duplicate entry for ", {url: arr[7]});
-                    error("Duplicate entry");
+                    reject("Duplicate entry");
                 }
             }
             else {
+                Logger.debug(`PDX100#${message.id} : ${message.content}`);
                 Logger.warn("PDX100: Unable to parse message", {content: message.content});
                 //Formatter.format(message);
-                error("Unable to parse message");
+                reject("PDX100: Unable to parse message");
             }
         });
     }
 }
 
 MessageParser.register('PDX100', new Parser());
+
+module.exports = Parser;
+module.exports.extractor = extractor;

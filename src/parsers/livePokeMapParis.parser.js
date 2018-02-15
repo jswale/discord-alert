@@ -4,23 +4,25 @@ const MessageParser = require('../MessageParser');
 const Logger = require('../helpers/Logger');
 const Pokemon = require('../domain/Pokemon');
 
+const extractor = new RegExp(/\[([^\]]+)\]\s:\s\*{2}([^\*]+)\*{2}\s.\s+IV\*{2}(\d+)%\*{2}\s+LVL\*{2}(\d+)\*{2}\s+PC\*{2}(\d+)\*\*\sDespawn\s+(\d{2}\:\d{2})\s(\*{2}Boost météo [^\*]*\*{2}\s+)?\(([^\)]*)\)\s(?:\(([^\)]*)\)\s+)?\(([^\)]*)\)\s+(http.*)/);
+// 1 : postalCode
+// 2 : name
+// 3 : IV
+// 4 : lvl
+// 5 : pc
+// 6 : despawn
+// 7 : boosted
+// 8 : ATT/DEF/PV
+// 9 : template
+//10 : location
+//11 : url
+
 class Parser {
     parse(message) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             //Logger.debug(`livePokeMapParis#${message.id}`, message.content);
-            // 1 : postalCode
-            // 2 : name
-            // 3 : IV
-            // 4 : lvl
-            // 5 : pc
-            // 6 : despawn
-            // 7 : boosted
-            // 8 : ATT/DEF/PV
-            // 9 : template
-            //10 : location
-            //11 : url
-            let rx = /\[([^\]]+)\]\s:\s\*{2}([^\*]+)\*{2}\s.\s+IV\*{2}(\d+)%\*{2}\s+LVL\*{2}(\d+)\*{2}\s+PC\*{2}(\d+)\*\*\sDespawn\s+(\d{2}\:\d{2})\s(\*{2}Boost météo [^\*]*\*{2}\s+)?\(([^\)]*)\)\s(?:\(([^\)]*)\)\s+)?\(([^\)]*)\)\s+(http.*)/g;
-            let arr = rx.exec(message.content.replace(/\n/g, ' '));
+
+            let arr = extractor.exec(message.content);
             if (null !== arr) {
                 let lat;
                 let lng;
@@ -45,13 +47,16 @@ class Parser {
                     lng: lng
                 }));
             } else {
-                Logger.debug(`livePokeMapParis#${message.id} : ${message.content}`);
+                Logger.debug(`LPMP#${message.id} : ${message.content}`);
                 Logger.warn('LPMP: Unable to parse message', {message: message.content});
                 //Formatter.format(message);
-                resolve('LPMP: Unable to parse message');
+                reject('LPMP: Unable to parse message');
             }
         });
     }
 }
 
 MessageParser.register('LPMP', new Parser());
+
+module.exports = Parser;
+module.exports.extractor = extractor;
