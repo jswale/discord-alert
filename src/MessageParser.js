@@ -6,11 +6,12 @@ const Logger = require('./helpers/Logger');
 
 const parsers = {};
 
+function register(alias, parser) {
+    Logger.info(`Register parser ${alias}`);
+    parsers[alias] = parser;
+}
+
 module.exports = {
-    register: function (alias, parser) {
-        Logger.info(`Register parser ${alias}`);
-        parsers[alias] = parser;
-    },
     parse: function (message, alias) {
         return new Promise((resolve, reject) => {
             let parser = parsers[alias];
@@ -30,7 +31,8 @@ module.exports = {
         Logger.info(`Loading parsers`);
         let basePath = path.resolve(__dirname, 'parsers');
         fs.readdirSync(basePath).forEach(file => {
-            require(`./parsers/${file}`);
+            let Parser = require(`./parsers/${file}`);
+            register(Parser.code, new Parser());
         });
         Logger.info(`> done`);
     }

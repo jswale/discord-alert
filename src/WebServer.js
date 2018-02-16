@@ -16,7 +16,14 @@ class WebServer {
 
         let router = express.Router();
 
-        router.get('/rules/:name', (req, res) => {
+        router.get('/rules', (req, res) => {
+            res.json(Router.getFiles());
+        });
+        router.get('/rules/reload', (req, res) => {
+            Router.init();
+            res.send(true);
+        });
+        router.get('/rule/:name', (req, res) => {
             let rule = Router.getRule(req.params.name);
             if(rule) {
                 res.json(rule);
@@ -25,7 +32,7 @@ class WebServer {
             }
 
         });
-        router.post('/rules/:name', (req, res) => {
+        router.post('/rule/:name', (req, res) => {
             let json = req.body.json;
             if(json) {
                 Router.saveRule(req.params.name, json);

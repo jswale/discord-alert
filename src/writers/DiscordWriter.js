@@ -154,8 +154,7 @@ class DiscordWriter extends DiscordClient {
         }
         embed.setTitle(title);
 
-        let description;
-        description = `IV: **${pokemon.iv}** / LVL: **${pokemon.lvl}** / CP: **${pokemon.pc}**`;
+        let description = ['iv', 'lvl', 'pc'].filter(key=>pokemon[key]).map(key=>`${key.toUpperCase()}: **${pokemon[key]}**`).join(' / ');
 
         if (pokemon.despawn) {
             description += `\nDisparait à ${pokemon.despawn}`;
@@ -173,7 +172,7 @@ class DiscordWriter extends DiscordClient {
             embed.setURL(pokemon.url);
             {
                 let rx = /^.*?(\d+\.\d+)(?:%2C|,)(\d+\.\d+)$/;
-                let arr = rx.exec(url);
+                let arr = rx.exec(pokemon.url);
                 if (null !== arr) {
                     description += `\n\nGPS: ${arr[1]} | ${arr[2]}`;
                     if (entry) {

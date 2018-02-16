@@ -44,24 +44,27 @@ Depop : 23:30:07 (20m 45s)`
     }, {
         parser: 'livePokeMapParis',
         useCases: [{
-            title: 'boosted',
+            title: 'boosted with street',
             message: '[95100] : **Lovdisc** ♀  IV**100%** LVL**31** PC**641** Despawn 09:37 **Boost météo Pluie** (15/15/15) (Trempette/Aqua-Jet) (80 Rue Ferdinand Berthoud, 95100 Argenteuil, France) https://www.google.com/maps?q=48.93770033999660%2C2.23513714973061',
         }, {
-            title: 'normal 1',
+            title : 'boosted without street',
+            message : '[78240] : **Evoli** ♂  IV**100%** LVL**8** PC**218** Despawn 11:21 **Boost météo Quelques nuages** (15/15/15) (Vive-Attaque/Météores) (78240 Chambourcy, France) https://www.google.com/maps?q=48.90849552668000%2C2.03404184756808'
+        }, {
+            title: 'normal with street',
             message: '[94200] : **Lovdisc** ♀  IV**100%** LVL**7** PC**143** Despawn 09:43 (15/15/15) (Pistolet à O/Vampibaiser) (64 Rue Maurice Gunsbourg, 94200 Ivry-sur-Seine, France) https://www.google.com/maps?q=48.81220726764360%2C2.39921247836524'
         }, {
-            title: 'normal 2',
-            message: '[95100] : **Rattata** ♂  IV**100%** LVL**27** PC**453** Despawn 09:43 (15/15/15) (Vive-Attaque/Croc de Mort) (5 Rue des Graviers, 95100 Argenteuil, France) https://www.google.com/maps?q=48.93536562420410%2C2.24180558321670'
+            title: 'normal without street',
+            message: '[95100] : **Rattata** ♂  IV**100%** LVL**27** PC**453** Despawn 09:43 (15/15/15) (Vive-Attaque/Croc de Mort) (95100 Argenteuil, France) https://www.google.com/maps?q=48.93536562420410%2C2.24180558321670'
         }]
     }
     ];
 
     tests.forEach(function (test) {
-        describe(test.parser, function () {
-            let parser = require(`../src/parsers/${test.parser}.parser`);
+        let Parser = require(`../src/parsers/${test.parser}.parser`);
+        describe(`${Parser.code}: ${test.parser}`, function () {
             test.useCases.forEach(function (useCase) {
-                it(useCase.title, function () {
-                    assert.notEqual(parser.extractor.exec(useCase.message), null);
+                it(`${useCase.title}`, function () {
+                    assert.notEqual(Parser.extractor.exec(useCase.message), null);
                 });
             });
 

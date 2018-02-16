@@ -50,6 +50,10 @@ class Router {
         return this.cache[file];
     }
 
+    getFiles() {
+        return Object.keys(this.cache);
+    }
+
     getRules() {
         return this.rules;
     }

@@ -100,6 +100,10 @@ module.exports = {
                     //Logger.debug(`[filter] Missmatch country`);
                     return false;
                 }
+                if (!isInList(filter, entry, 'city')) {
+                    //Logger.debug(`[filter] Missmatch country`);
+                    return false;
+                }
 
                 Logger.debug(` > Matching for ${entry.name} for ${rule.destinations[0].writer} > ${rule.destinations[0].group} > ${rule.destinations[0].name}`);
 

@@ -39,6 +39,7 @@ function getCoords(url) {
     });
 }
 
+const PARSER_CODE = 'PDX100';
 const extractor = new RegExp(/\:flag_(.{2})\:\s+(?:\(\d+\:\d+\))?\s+\*+([^\*]+)\*+\s+<[^>]*>\s+IV(\d+)\*+\s+CP(\d+)\s+L(\d+)\*+[^\[]*(?:\[([^\]]*)\].*)?.*?\n.*<(https:\/\/pokedex100.com[^>]*)>/);
 // 1 : country
 // 2 : name
@@ -83,21 +84,20 @@ class Parser {
 
                     }).catch(reason => reject(reason));
                 } else {
-                    Logger.debug("PDX100: Duplicate entry for ", {url: arr[7]});
+                    Logger.debug(`${PARSER_CODE}: Duplicate entry for arr[7]`);
                     reject("Duplicate entry");
                 }
             }
             else {
-                Logger.debug(`PDX100#${message.id} : ${message.content}`);
-                Logger.warn("PDX100: Unable to parse message", {content: message.content});
+                Logger.debug(`${PARSER_CODE}#${message.id} : ${message.content}`);
+                Logger.warn(`${PARSER_CODE}: Unable to parse message`, {content: message.content});
                 //Formatter.format(message);
-                reject("PDX100: Unable to parse message");
+                reject(`${PARSER_CODE}: Unable to parse message`);
             }
         });
     }
 }
 
-MessageParser.register('PDX100', new Parser());
-
 module.exports = Parser;
+module.exports.code = PARSER_CODE;
 module.exports.extractor = extractor;

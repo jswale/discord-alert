@@ -1,0 +1,92 @@
+body {
+    font-family: Roboto, sans-serif;
+}
+
+fieldset {
+    border: 1px solid #ced4da;
+}
+
+fieldset > legend {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.form-control {
+    padding: .375rem .75rem;
+    color: #495057;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: #b21f2d;
+    border-color: #b21f2d;
+}
+
+.btn-danger:hover {
+    color: #fff;
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    border-radius: .25rem;
+    transition: background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.rules {
+    margin: 10px 0;
+
+}
+
+.groups {
+    margin-bottom: 10px;
+}
+
+.group {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.group .btn-danger {
+    position: absolute;
+    top: 15px;
+    right: 5px;
+}
+
+.basicField {
+    margin-bottom: 4px;
+}
+
+.basicField > span {
+    width: 150px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.basicField .help {
+    margin-left: 150px;
+    color: #c2c9d1;
+    font-size: 13px;
+}

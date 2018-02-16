@@ -4,7 +4,8 @@ const MessageParser = require('../MessageParser');
 const Logger = require('../helpers/Logger');
 const Pokemon = require('../domain/Pokemon');
 
-const extractor = new RegExp(/\[([^\]]+)\]\s:\s\*{2}([^\*]+)\*{2}\s.\s+IV\*{2}(\d+)%\*{2}\s+LVL\*{2}(\d+)\*{2}\s+PC\*{2}(\d+)\*\*\sDespawn\s+(\d{2}\:\d{2})\s(\*{2}Boost météo [^\*]*\*{2}\s+)?\(([^\)]*)\)\s(?:\(([^\)]*)\)\s+)?\(([^\)]*)\)\s+(http.*)/);
+const PARSER_CODE = 'LPMP';
+const extractor = new RegExp(/\[([^\]]+)\]\s:\s\*{2}([^\*]+)\*{2}\s.\s+IV\*{2}(\d+)%\*{2}\s+LVL\*{2}(\d+)\*{2}\s+PC\*{2}(\d+)\*\*\sDespawn\s+(\d{2}\:\d{2})\s(\*{2}Boost météo [^\*]*\*{2}\s+)?\(([^\)]*)\)\s(?:\(([^\)]*)\)\s+)?\(((?:.*?, )?(\d{5}) (.*?),.*?)\)\s+(http.*)/);
 // 1 : postalCode
 // 2 : name
 // 3 : IV
@@ -15,7 +16,9 @@ const extractor = new RegExp(/\[([^\]]+)\]\s:\s\*{2}([^\*]+)\*{2}\s.\s+IV\*{2}(\
 // 8 : ATT/DEF/PV
 // 9 : template
 //10 : location
-//11 : url
+//11 : postal code
+//12 : city
+//13 : url
 
 class Parser {
     parse(message) {
@@ -42,21 +45,21 @@ class Parser {
                     despawn: arr[6],
                     country: 'fr',
                     location: arr[10],
-                    url: arr[11],
+                    city: arr[12],
+                    postalCode: arr[11],
+                    url: arr[13],
                     lat: lat,
                     lng: lng
                 }));
             } else {
-                Logger.debug(`LPMP#${message.id} : ${message.content}`);
-                Logger.warn('LPMP: Unable to parse message', {message: message.content});
+                Logger.warn(`${PARSER_CODE}: Unable to parse message`, {message: message.content});
                 //Formatter.format(message);
-                reject('LPMP: Unable to parse message');
+                reject(`${PARSER_CODE}: Unable to parse message`);
             }
         });
     }
 }
 
-MessageParser.register('LPMP', new Parser());
-
 module.exports = Parser;
+module.exports.code = PARSER_CODE;
 module.exports.extractor = extractor;

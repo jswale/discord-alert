@@ -13,6 +13,8 @@ class Pokemon {
         this.despawn = def.despawn;
         this.country = def.country;
         this.location = def.location;
+        this.city = def.city;
+        this.postalCode = def.postalCode;
         this.lat = def.lat;
         this.lng = def.lng;
         this.url = def.url;
