@@ -148,12 +148,22 @@ Or using login/password :
 ```
 
 #### Server part (Fake)
-If you want to check some fake data you can set the names of the pokemons in the `names` node.
+If you want to check some fake datas you can set some informations about the pokemons :
+
+* `names` the list of pokemon names (default to `pikachu`)
+* `level` the level or range of level (ex: `30` or `[30,35]`)
+* `iv` the iv or range of iv (ex: `100` or `[90,100]`)
+* `pc` the pc or range of pc (ex: `2000` or `[10,100]`)
+* `country` the list of countries (ex: `["fr"]`)
 
 ```json
 {
   "server" : {
-    "names" : ["Tylton"]
+    "names" : ["Tylton"],
+    "level" : 30,
+    "iv" : 100,
+    "pc" : [10,100],
+    "country" : ["fr"]
   }  
 }
 ```

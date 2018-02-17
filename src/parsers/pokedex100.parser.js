@@ -84,7 +84,7 @@ class Parser {
 
                     }).catch(reason => reject(reason));
                 } else {
-                    Logger.debug(`${PARSER_CODE}: Duplicate entry for arr[7]`);
+                    Logger.debug(`${PARSER_CODE}: Duplicate entry for ${arr[7]}`);
                     reject("Duplicate entry");
                 }
             }
