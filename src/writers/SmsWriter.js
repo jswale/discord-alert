@@ -9,7 +9,7 @@ class SmsWriter {
     start() {
     }
 
-    buildMessage(pokemon, entry) {
+    static buildMessage(pokemon, entry) {
         let s;
 
         if (entry) {
@@ -25,7 +25,7 @@ class SmsWriter {
     }
 
     send(pokemon, entry) {
-        let url = this.conf.url.replace(/\{MESSAGE\}/, this.buildMessage(pokemon, entry));
+        let url = this.conf.url.replace(/\{MESSAGE\}/, SmsWriter.buildMessage(pokemon, entry));
         rp(url).then(() => Logger.debug('SMS sent')).catch((reason) => Logger.error(`Error sending SMS : ${reason}`));
     }
 }

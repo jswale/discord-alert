@@ -5,7 +5,7 @@ const Logger = require('../helpers/Logger');
 const Pokemon = require("../domain/Pokemon");
 
 const PARSER_CODE = 'MLV';
-const extractor = new RegExp(/IV : (\?{3}|\d+\.\d+|\d+)% \(([^\)]+)\)\sLV : (\?|\d+).*?PC : (\?|\d+)\s(.*?)\s+(\d+\.\d+),(\d+\.\d+)\s(.*?)\s+(.*?\d{5} (.*))\sDepop : (\d+:\d+:\d+)/);
+const extractor = new RegExp(/IV : (\?{3}|\d+\.\d+|\d+)% \(([^\)]+)\)\sLV : (\?|\d+).*?PC : (\?|\d+)\s(.*?)\s+(\d+\.\d+),(\d+\.\d+)\s(.*?)\s+(.*?(\d{5}) (.*))\sDepop : (\d+:\d+:\d+)/);
 // 1 : IV
 // 2 : attaque / defense / pv
 // 3 : LVL
@@ -28,8 +28,8 @@ class Parser {
                 let name = message.author.username;
                 let messageEmbed = embeds[0];
                 let description = messageEmbed.description;
-                let title = messageEmbed.title;
-                let city = /^\[(.*?)\]/.exec(title);
+                //let title = messageEmbed.title;
+                //let city = /^\[(.*?)\]/.exec(title);
 
                 let arr = extractor.exec(description);
                 if (null !== arr) {
@@ -42,8 +42,8 @@ class Parser {
                         template: arr[5] === 'unknown / unknown' ? null : arr[5],
                         despawn: arr[12],
                         country: 'fr',
-                        postalCode: city[10],
-                        city: city[11],
+                        postalCode: arr[10],
+                        city: arr[11],
                         location: arr[9],
                         lat: arr[6],
                         lng: arr[7]

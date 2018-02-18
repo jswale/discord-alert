@@ -76,11 +76,11 @@ module.exports = {
         return Router.getRules().filter(rule => {
             return rule.filters.some(filter => {
 
-                if (pokedex && !isPokemonListed(filter.pokemons, pokedex)) {
+                if (!isPokemonListed(filter.pokemons, pokedex)) {
                     //Logger.debug(`[filter] Pokemon is not watched`);
                     return false;
                 }
-                if (pokedex && isPokemonExclude(filter.excludePokemons, pokedex)) {
+                if (isPokemonExclude(filter.excludePokemons, pokedex)) {
                     //Logger.debug(`[filter] Pokemon is excluded`);
                     return false;
                 }

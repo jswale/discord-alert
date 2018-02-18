@@ -14,7 +14,7 @@ module.exports = class DiscordClient {
     start() {
         this.client = new Discord.Client();
         if (this.conf.token === undefined) {
-            Tokenizer.get(this.conf.login, this.conf.password)
+            Tokenizer.getToken(this.conf.login, this.conf.password)
                 .then(token => this.connect(token))
                 .catch(reason => Logger.error(`Unable to retrieve token for ${this.conf.login}`));
         } else {

@@ -1,4 +1,3 @@
-const Utils = require('../helpers/Utils');
 const Logger = require('../helpers/Logger');
 const rp = require('request-promise');
 
