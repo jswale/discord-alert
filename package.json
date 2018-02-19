@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "consolidate": "node src/ConsolidateData.js",
     "start": "node app.js",
     "test": "mocha"
   },
