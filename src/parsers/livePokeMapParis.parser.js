@@ -1,6 +1,5 @@
 'use strict';
 
-const MessageParser = require('../MessageParser');
 const Logger = require('../helpers/Logger');
 const Pokemon = require('../domain/Pokemon');
 
@@ -29,7 +28,7 @@ class Parser {
             if (null !== arr) {
                 let lat;
                 let lng;
-                var gps = /https:\/\/www.google.com\/.*?(\d+\.\d+).*(\d+\.\d+)/.exec(arr[11]);
+                let gps = /https:\/\/www.google.com\/.*?(\d+\.\d+).*(\d+\.\d+)/.exec(arr[11]);
                 if (gps) {
                     lat = gps[1];
                     lng = gps[2];

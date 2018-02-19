@@ -1,6 +1,7 @@
 'use strict';
 
 const Writer = require('../Writer');
+const Utils = require('../helpers/Utils');
 const Logger = require('../helpers/Logger');
 const Pokemon = require('../domain/Pokemon');
 
@@ -15,23 +16,15 @@ module.exports = class FakeListener {
         setInterval(() => this.generateMessage(), 5000);
     }
 
-    getFakeName() {
-        let names = this.conf.names;
-        return names[Math.floor(Math.random() * names.length)];
-    }
-
     generateMessage() {
         let pokemon = new Pokemon({
             source: "Fake",
-            name: this.getFakeName(),
-            iv: 100,
-            lvl: 35,
-            pc: 666,
-            country: "fr"
+            name: Utils.getRandomValue(this.conf.names, "pikachu"),
+            iv: Utils.getRangeInt(this.conf.iv, 1, 30),
+            lvl: Utils.getRangeInt(this.conf.lvl, 1, 100),
+            pc: Utils.getRangeInt(this.conf.pc, 10, 5000),
+            country: Utils.getRandomValue(this.conf.country, 'fr')
         });
-
-        //Logger.debug('Generated pokemon', {pokemon: pokemon});
-
         Writer.broadcast(pokemon);
     }
 };

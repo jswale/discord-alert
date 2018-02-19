@@ -7,7 +7,7 @@ class ConsoleWriter {
 
     send(pokemon, entry, destination) {
         //283 / 333 / 311 / 351 / 276 / 331
-        Logger.debug('Sending...', {destination: destination, entry: entry});
+        Logger.debug('Sending...', {pokemon: pokemon, destination: destination, entry: entry});
     }
 }
 

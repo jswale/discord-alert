@@ -14,7 +14,7 @@ module.exports = class DiscordClient {
     start() {
         this.client = new Discord.Client();
         if (this.conf.token === undefined) {
-            Tokenizer.get(this.conf.login, this.conf.password)
+            Tokenizer.getToken(this.conf.login, this.conf.password)
                 .then(token => this.connect(token))
                 .catch(reason => Logger.error(`Unable to retrieve token for ${this.conf.login}`));
         } else {
@@ -22,14 +22,23 @@ module.exports = class DiscordClient {
         }
     }
 
-    connect(token) {
-        Logger.debug(`Trying to connect using token ${token}`);
+    connect(token, noTry = 1) {
+        if (noTry == 5) {
+            Logger.error(`Connexion attempt limit reached`);
+            return;
+        }
+        Logger.debug(`Trying to connect using token ${token}, attempt ${noTry}`);
         this.client.login(token).then(() => {
-            Logger.info(`Connected with ${token}`);
+            Logger.info(`Connected with ${token}`, {conf: this.conf});
+        }).catch(reason => {
+            Logger.error(`Unable to perform login with token ${token}`, {reason: reason});
+            this.connect(token, noTry++);
+        }).then(() => {
             this.connected = true;
             this.onConnection();
-        }).catch(reason => {
-            Logger.error(`Unable to perform login with token ${token}`, {reason: reason})
+        }).catch((reason) => {
+            Logger.error(`Error while performing onConnection with token ${token}`, {reason: reason});
+            this.connect(token, noTry++);
         })
     }
 

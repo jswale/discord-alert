@@ -3,7 +3,7 @@
 const Discord = require('discordv8');
 const Logger = require('./helpers/Logger');
 
-function get(email, password) {
+function getToken(email, password) {
     return new Promise((resolve, reject) => {
         let client = new Discord.Client();
         client.login(email, password, (error, token) => {
@@ -18,4 +18,4 @@ function get(email, password) {
     });
 }
 
-module.exports = {get};
+module.exports = {getToken};

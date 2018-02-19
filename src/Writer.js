@@ -1,7 +1,6 @@
 'use strict';
 
 const Logger = require('./helpers/Logger');
-const Utils = require('./helpers/Utils');
 const DiscordWriter = require('./writers/DiscordWriter');
 const SmsWriter = require('./writers/SmsWriter');
 const ApiWriter = require('./writers/ApiWriter');
@@ -12,6 +11,12 @@ const config = require('./helpers/Config');
 
 const writers = {};
 
+/**
+ *
+ * @param conf
+ * @param conf.alias
+ * @return {*}
+ */
 function load(conf) {
     Logger.info(`Creating writer ${conf.alias}`);
     let writer = create(conf);

@@ -5,6 +5,10 @@ const Logger = require('../helpers/Logger');
 
 class DiscordWriter extends DiscordClient {
 
+    constructor(conf) {
+        super(conf);
+    }
+
     onConnection() {
         this.categories = {};
         this.channelsCache = {};
@@ -146,7 +150,7 @@ class DiscordWriter extends DiscordClient {
             //embed.setAuthor(`[${pokemon.country.toUpperCase()}] ${entry.Number} - ${entry.NameLocale}`, `https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`);
             embed.setThumbnail(`https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`);
         } else {
-            title = `[${pokemon.country.toUpperCase()}] ${entry.name}`;
+            title = `[${pokemon.country.toUpperCase()}] ${pokemon.name}`;
             //embed.setAuthor(`[${pokemon.country.toUpperCase()}] ${entry.name}`);
         }
         if (pokemon.template) {

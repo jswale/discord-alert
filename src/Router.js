@@ -1,7 +1,8 @@
 const fs = require('fs');
+const path = require('path');
 const Logger = require('./helpers/Logger');
 
-let folder = './data/routes';
+let folder = path.join(__dirname, '/../data/routes');
 
 class Router {
 
@@ -28,7 +29,7 @@ class Router {
 
     load(file) {
         Logger.debug(`Loading ${file} routing file`);
-        this.cache[file] = require(`.${folder}/${file}`);
+        this.cache[file] = require(path.join(folder, file));
         this.buildRules();
     }
 
@@ -39,7 +40,7 @@ class Router {
     saveRule (prefix, json) {
         let file = `${prefix}.routes.json`;
         Logger.debug(`Saving ${file} routing file`);
-        fs.writeFileSync(__dirname + `/.${folder}/${file}`, json);
+        fs.writeFileSync(path.join(folder, file), json);
         this.cache[file] = JSON.parse(json);
         this.buildRules();
     }
