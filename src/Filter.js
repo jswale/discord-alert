@@ -62,13 +62,25 @@ function isPokemonExclude(pokemons, pokemon) {
     }
 }
 
-function isInList(userFilter, pokemon, key) {
-    const comparators = userFilter[key];
-    const value = pokemon[key];
+const MODE_STRICT = 1;
+const MODE_STARTS = 2;
+
+function isInList(userFilter, pokemon, key, mode = MODE_STRICT) {
+    let comparators = userFilter[key];
     if (!comparators) {
         return true;
     }
-    return comparators.indexOf(value) !== -1;
+    let value = pokemon[key];
+    return comparators.some(comparator => {
+        switch(mode) {
+            case MODE_STARTS:
+                return value.startsWith(comparator);
+
+            case MODE_STRICT:
+            default:
+                return comparator === value;
+        }
+    });
 }
 
 module.exports = {
@@ -101,23 +113,31 @@ module.exports = {
                     return false;
                 }
                 if (!isInList(filter, pokemon, 'channelId')) {
-                    //Logger.debug(`[filter] Missmatch country`);
+                    //Logger.debug(`[filter] Missmatch channelId`);
                     return false;
                 }
                 if (!isInList(filter, pokemon, 'channelName')) {
-                    //Logger.debug(`[filter] Missmatch country`);
+                    //Logger.debug(`[filter] Missmatch channelName`);
                     return false;
                 }
                 if (!isInList(filter, pokemon, 'guildId')) {
-                    //Logger.debug(`[filter] Missmatch country`);
+                    //Logger.debug(`[filter] Missmatch guildId`);
                     return false;
                 }
                 if (!isInList(filter, pokemon, 'guildName')) {
-                    //Logger.debug(`[filter] Missmatch country`);
+                    //Logger.debug(`[filter] Missmatch guildName`);
                     return false;
                 }
                 if (!isInList(filter, pokemon, 'city')) {
-                    //Logger.debug(`[filter] Missmatch country`);
+                    //Logger.debug(`[filter] Missmatch city`);
+                    return false;
+                }
+                if (!isInList(filter, pokemon, 'source')) {
+                    //Logger.debug(`[filter] Missmatch source`);
+                    return false;
+                }
+                if (!isInList(filter, pokemon, 'postalCode', MODE_STARTS)) {
+                    //Logger.debug(`[filter] Missmatch postalCode`);
                     return false;
                 }
 

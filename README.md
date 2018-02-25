@@ -102,10 +102,11 @@ The listeners are defined in the array named **listeners** and are a collection 
 }
 ```
 
-A listener contains 3 parts :
+A listener contains :
 * the `type` of listener
 * the connexion information to the client `server`
 * the list of `channels` we want to listen
+* the list of `guilds` we want to listen (you can defined `guilds` and `channels`)
 
 #### Type part
 
@@ -167,6 +168,24 @@ If you want to check some fake datas you can set some informations about the pok
   }  
 }
 ```
+
+#### Guilds part
+
+You can list, in this section, all the guilds available from the account specify in the `server` section you want to listen.
+```json
+{
+  "guilds" : {
+    "<guild_id>": "<formater>"
+  }
+}
+```
+
+Associated to the channel_id, you have to define a formater. The current formaters are defined in the folder `src/parsers` :
+* MLV
+* LMPM
+* PDX100
+
+You can add more support for you own channels according to the format used to publish messages 
 
 #### Channels part
 
@@ -242,7 +261,14 @@ A route contains a collection of filters. You can filter the messages by setting
 * **lvl**: the level of the pokemon. Use `30` for matching every pokemon lvl 30 or `[30,35]` for pokemon having a level between 30 and 35.
 * **iv**: the IV of the pokemon. Use `100` for matching every pokemon IV 100 or `[90,100]` for pokemon having a IV between 90 and 100.
 * **pc**: the PC of the pokemon. Use `2000` for matching every pokemon PC 2000 or `[2000,9999]` for pokemon having a PC greater than 2000.
-* **country**: the coutry of origin of the pokemon. Use `['fr']` for matching every pokemon from France or `['fr', 'us"]` for pokemon from France or USA. 
+* **country**: the coutry of origin of the pokemon. Use `['fr']` for matching every pokemon from France or `['fr', 'us"]` for pokemon from France or USA.
+* **city**: the city name of the pokemon 
+* **channelId**: the id of the source channel
+* **channelName**: the name of the source channel 
+* **guildId**: the id of the source channel guild
+* **guildName**: the name of the source channel guild
+* **postalCode**: the exact of beginning of the postal code
+* **source**: the source 
 
 *Example for IV100 LVL30+*
  ```json
