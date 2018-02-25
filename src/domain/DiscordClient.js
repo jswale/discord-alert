@@ -6,24 +6,26 @@ const Tokenizer = require('../Tokenizer');
 
 module.exports = class DiscordClient {
 
-    constructor(conf) {
+    constructor(conf, alias) {
         this.conf = conf;
+        this.alias = alias;
         this.connected = false;
     }
 
     start() {
         this.client = new Discord.Client();
+        this.client.on('error', (reason) => Logger.error(`Client error`, {reason: reason}));
         if (this.conf.token === undefined) {
             Tokenizer.getToken(this.conf.login, this.conf.password)
                 .then(token => this.connect(token))
-                .catch(reason => Logger.error(`Unable to retrieve token for ${this.conf.login}`));
+                .catch(reason => Logger.error(`Unable to retrieve token for ${this.conf.login}`, {reason: reason}));
         } else {
             this.connect(this.conf.token);
         }
     }
 
     connect(token, noTry = 1) {
-        if (noTry == 5) {
+        if (noTry === 5) {
             Logger.error(`Connexion attempt limit reached`);
             return;
         }

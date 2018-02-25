@@ -2,7 +2,6 @@
 
 const rp = require('request-promise');
 const CryptoJS = require('crypto-js');
-const MessageParser = require('../MessageParser');
 const Pokemon = require('../domain/Pokemon');
 const Logger = require('../helpers/Logger');
 const config = require('../helpers/Config');
@@ -14,7 +13,7 @@ function getCoords(url) {
             return resolve(null);
         }
         let j = rp.jar();
-        var cookie = rp.cookie('sessionid=' + sessionId);
+        let cookie = rp.cookie('sessionid=' + sessionId);
         j.setCookie(cookie, "https://pokedex100.com");
 
         rp({
@@ -40,7 +39,7 @@ function getCoords(url) {
 }
 
 const PARSER_CODE = 'PDX100';
-const extractor = new RegExp(/\:flag_(.{2})\:\s+(?:\(\d+\:\d+\))?\s+\*+([^\*]+)\*+\s+<[^>]*>\s+IV(\d+)\*+\s+CP(\d+)\s+L(\d+)\*+[^\[]*(?:\[([^\]]*)\].*)?.*?\n.*<(https:\/\/pokedex100.com[^>]*)>/);
+const extractor = new RegExp(/\:flag_(.{2}):\s+(?:\(\d+:\d+\))?\s+\*+([^\*]+)\*+\s+<[^>]*>\s+IV(\d+)\*+\s+CP(\d+)\s+L(\d+)\*+[^\[]*(?:\[([^\]]*)\].*)?.*?\n.*<(https:\/\/pokedex100.com[^>]*)>/);
 // 1 : country
 // 2 : name
 // 3 : IV
@@ -79,7 +78,8 @@ class Parser {
                             country: arr[1],
                             url: arr[7],
                             lat: lat,
-                            lng: lng
+                            lng: lng,
+                            channel : message.channel
                         }));
 
                     }).catch(reason => reject(reason));

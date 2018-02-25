@@ -4,7 +4,7 @@ const Logger = require('../helpers/Logger');
 const Pokemon = require('../domain/Pokemon');
 
 const PARSER_CODE = 'LPMP';
-const extractor = new RegExp(/\[([^\]]+)\]\s:\s\*{2}([^\*]+)\*{2}\s.\s+IV\*{2}(\d+)%\*{2}\s+LVL\*{2}(\d+)\*{2}\s+PC\*{2}(\d+)\*\*\sDespawn\s+(\d{2}\:\d{2})\s(\*{2}Boost météo [^\*]*\*{2}\s+)?\(([^\)]*)\)\s(?:\(([^\)]*)\)\s+)?\(((?:.*?, )?(\d{5}) (.*?),.*?)\)\s+(http.*)/);
+const extractor = new RegExp(/\[([^\]]+)\]\s:\s\*{2}([^\*]+)\*{2}\s.\s+IV\*{2}(\d+)%\*{2}\s+LVL\*{2}(\d+)\*{2}\s+PC\*{2}(\d+)\*\*\sDespawn\s+(\d{2}:\d{2})\s(\*{2}Boost météo [^\*]*\*{2}\s+)?\(([^)]*)\)\s(?:\(([^)]*)\)\s+)?\(((?:.*?, )?(\d{5}) (.*?),.*?)\)\s+(http.*)/);
 // 1 : postalCode
 // 2 : name
 // 3 : IV
@@ -22,17 +22,18 @@ const extractor = new RegExp(/\[([^\]]+)\]\s:\s\*{2}([^\*]+)\*{2}\s.\s+IV\*{2}(\
 class Parser {
     parse(message) {
         return new Promise((resolve, reject) => {
-            //Logger.debug(`livePokeMapParis#${message.id}`, message.content);
+           // Logger.debug(`livePokeMapParis#${message.id}`, {message:message.content});
 
             let arr = extractor.exec(message.content);
             if (null !== arr) {
                 let lat;
                 let lng;
-                let gps = /https:\/\/www.google.com\/.*?(\d+\.\d+).*(\d+\.\d+)/.exec(arr[11]);
+                let gps = /^.*?(\d+\.\d+)(?:%2C|,)(\d+\.\d+)$/.exec(arr[13]);
                 if (gps) {
                     lat = gps[1];
                     lng = gps[2];
                 }
+
                 resolve(new Pokemon({
                     source: 'LivePokeMapParis',
                     name: arr[2],
@@ -48,7 +49,8 @@ class Parser {
                     postalCode: arr[11],
                     url: arr[13],
                     lat: lat,
-                    lng: lng
+                    lng: lng,
+                    channel : message.channel
                 }));
             } else {
                 Logger.warn(`${PARSER_CODE}: Unable to parse message`, {message: message.content});

@@ -1,11 +1,10 @@
 "use strict";
 
-const MessageParser = require('../MessageParser');
 const Logger = require('../helpers/Logger');
 const Pokemon = require("../domain/Pokemon");
 
 const PARSER_CODE = 'MLV';
-const extractor = new RegExp(/IV : (\?{3}|\d+\.\d+|\d+)% \(([^\)]+)\)\sLV : (\?|\d+).*?PC : (\?|\d+)\s(.*?)\s+(\d+\.\d+),(\d+\.\d+)\s(.*?)\s+(.*?(\d{5}) (.*))\sDepop : (\d+:\d+:\d+)/);
+const extractor = new RegExp(/IV : (\?{3}|\d+\.\d+|\d+)% \(([^)]+)\)\sLV : (\?|\d+).*?PC : (\?|\d+)\s(.*?)\s+(\d+\.\d+),(\d+\.\d+)\s(.*?)\s+(.*?(\d{5}) (.*))\sDepop : (\d+:\d+:\d+)/);
 // 1 : IV
 // 2 : attaque / defense / pv
 // 3 : LVL
@@ -46,7 +45,8 @@ class Parser {
                         city: arr[11],
                         location: arr[9],
                         lat: arr[6],
-                        lng: arr[7]
+                        lng: arr[7],
+                        channel : message.channel
                     }));
                 }
             }
