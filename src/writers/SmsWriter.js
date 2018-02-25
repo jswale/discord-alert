@@ -2,16 +2,30 @@ const rp = require('request-promise');
 const Logger = require('../helpers/Logger');
 
 class SmsWriter {
-    constructor(conf) {
+
+    constructor(conf, alias) {
         this.conf = conf;
+        this.alias = alias;
     }
 
     start() {
+        //nothing to do
     }
 
-    static buildMessage(pokemon, entry) {
-        let s;
+    /**
+     * Send the pokemon to the SMS REST api
+     *
+     * @param pokemon the pokemon
+     * @returns {Promise<any>}
+     */
+    send(pokemon) {
+        let url = this.conf.url.replace('{MESSAGE}', SmsWriter.buildMessage(pokemon));
+        return rp(url).then(() => Logger.debug('SMS sent')).catch((reason) => Logger.error(`Error sending SMS : ${reason}`));
+    }
 
+    static buildMessage(pokemon) {
+        let s;
+        let entry = pokemon.pokedexEntry;
         if (entry) {
             s = `[${entry.Number}] ${entry.NameLocale}`;
         } else {
@@ -24,10 +38,6 @@ class SmsWriter {
         return s;
     }
 
-    send(pokemon, entry) {
-        let url = this.conf.url.replace(/\{MESSAGE\}/, SmsWriter.buildMessage(pokemon, entry));
-        rp(url).then(() => Logger.debug('SMS sent')).catch((reason) => Logger.error(`Error sending SMS : ${reason}`));
-    }
 }
 
 

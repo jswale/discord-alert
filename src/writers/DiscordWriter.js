@@ -2,19 +2,22 @@ const Discord = require('discord.js');
 
 const DiscordClient = require('../domain/DiscordClient');
 const Logger = require('../helpers/Logger');
+const Utils = require('../helpers/Utils');
+const Router = require('../Router');
 
 class DiscordWriter extends DiscordClient {
 
-    constructor(conf) {
-        super(conf);
+    constructor(conf, alias) {
+        super(conf, alias);
     }
 
     onConnection() {
-        this.categories = {};
-        this.channelsCache = {};
+        this._categories = {};
+        this._channelsCache = {};
+        this._replyTo = {};
         this.getGuild().channels.forEach(channel => {
             if (channel.type === null) {
-                this.categories[channel.name] = channel;
+                this._categories[channel.name] = channel;
             }
         });
 
@@ -22,15 +25,32 @@ class DiscordWriter extends DiscordClient {
         if (this.messages !== undefined) {
             let message;
             while ((message = this.messages.pop())) {
-                this.send(message);
+                this.send(message).finally();
             }
         }
 
+        this.initBroadcast();
         this.reply();
     }
 
+    /**
+     * Initialize the destination channels.
+     */
+    initBroadcast() {
+        Router.getByWriter(this.alias).forEach(destination => {
+            this.getOrCreateChannel(destination.group, destination.name)
+                //.then(() => Logger.info(`Channel ${destination.name} initialized`))
+                .catch(reason => Logger.warn('Unable to initialize broadcast channel', {
+                destination: destination,
+                reason: reason
+            }));
+        });
+    }
+
+    /**
+     * Reply mode to answer user actions
+     */
     reply() {
-        this._replyTo = {};
         // Listener
         this.client.on('message', (message) => {
             let channelId = message.channel.id;
@@ -40,7 +60,9 @@ class DiscordWriter extends DiscordClient {
                 return;
             }
 
-            switch (message.content) {
+            let args = message.content.split(' ');
+            let command = args[0];
+            switch (command) {
                 case '!c':
                 case '!clear':
                     console.log("Delete data from channel", message.channel.id, message.channel.name);
@@ -51,7 +73,23 @@ class DiscordWriter extends DiscordClient {
                                 message: message.id
                             }))
                         });
-                    }).catch(reason => console.log("Unable to fetch messages"));
+                    }).catch(reason => console.log("Unable to fetch messages", reason));
+                    break;
+
+                case '!p':
+                case '!pokedex':
+                    if (args.length === 2) {
+                        let key = args[1];
+                        let entry = Utils.getPokedexEntryByNumber(key) || Utils.getPokedexEntryByName(key);
+                        if (!entry) {
+                            message.channel.send(`:/ Impossible de trouver le pokémon ${key}`);
+                        } else {
+                            message.channel.send(Utils.getPokedexEntryDetail(entry));
+                            message.delete();
+                        }
+                    } else {
+                        message.channel.send(`**Usage**: !p 12`);
+                    }
                     break;
 
                 case '!h':
@@ -59,6 +97,7 @@ class DiscordWriter extends DiscordClient {
                     message.channel.send(`**Usage**:
 !h[elp] afficher l'aide
 !c[lear] pour nettoyer le salon des vieux messages
+!p[okedex] informations du pokedex
 `);
                     break;
             }
@@ -66,7 +105,11 @@ class DiscordWriter extends DiscordClient {
         });
     }
 
-
+    /**
+     * Get the current guild
+     *
+     * @returns {V | *}
+     */
     getGuild() {
         if (this.guild === undefined) {
             this.guild = this.client.guilds.find('id', this.conf.guild);
@@ -74,7 +117,13 @@ class DiscordWriter extends DiscordClient {
         return this.guild;
     }
 
-    send(pokemon, rule, destination) {
+    /**
+     * Send a pokemon to a destination
+     *
+     * @param pokemon the pokemon
+     * @param destination the channel destination
+     */
+    send(pokemon, destination) {
         if (false === this.connected) {
             if (this.messages === undefined) {
                 this.messages = [];
@@ -86,24 +135,35 @@ class DiscordWriter extends DiscordClient {
         if (typeof pokemon === 'string') {
             this.getOrCreateChannel('Divers', 'vrac').then(channel => channel.send(pokemon));
         } else {
-            this.broadcast(pokemon, rule, destination);
+            this.broadcast(pokemon, destination);
         }
     }
 
-    broadcast(pokemon, entry, destination) {
+    /**
+     * Broadcast the pokemon to a destination
+     *
+     * @param pokemon the pokemon
+     * @param destination the broadcast channel destination
+     */
+    broadcast(pokemon, destination) {
         //Logger.debug(`Broadcast to ${destination.group} > ${destination.name}`);
         this.getOrCreateChannel(destination.group, destination.name).then(channel => {
-            this._replyTo[channel.id] = true;
-            channel.send(DiscordWriter.buildMessage(pokemon, entry, destination.mentions));
+            channel.send(DiscordWriter.buildMessage(pokemon, destination.mentions));
         });
     }
 
+    /**
+     * Get or create a category
+     *
+     * @param name the category name
+     * @returns {Promise<any>}
+     */
     getOrCreateCategory(name) {
         return new Promise(resolve => {
-            let category = this.categories[name];
+            let category = this._categories[name];
             if (category === undefined) {
                 this.getGuild().createChannel(name, 'category').then(channel => {
-                    this.categories[name] = channel;
+                    this._categories[name] = channel;
                     resolve(channel);
                 });
             } else {
@@ -112,13 +172,20 @@ class DiscordWriter extends DiscordClient {
         });
     }
 
+    /**
+     * Get or create a channel in a category
+     *
+     * @param category the category name
+     * @param name the channel name
+     * @returns {Promise<any>}
+     */
     getOrCreateChannel(category, name) {
         return new Promise(resolve => {
             let guild = this.getGuild();
             this.getOrCreateCategory(category)
                 .then(parent => {
                     let uniqKey = `${category}$#$${name}`;
-                    let cache = this.channelsCache[uniqKey];
+                    let cache = this._channelsCache[uniqKey];
                     if (cache !== undefined) {
                         resolve(cache);
                     } else {
@@ -127,12 +194,15 @@ class DiscordWriter extends DiscordClient {
                         });
                         if (null === channel) {
                             guild.createChannel(name).then(channel => {
-                                channel.setParent(parent).catch(reason => Logger.warn(`Unable to move ${channel.name} to ${parent.name}`));
+                                channel.setParent(parent).catch(reason => Logger.warn(`Unable to move ${channel.name} to ${parent.name}`, {reason: reason}));
                                 channel.setTopic(`Pokemon selected for ${name}`);
-                                this.channelsCache[uniqKey] = channel;
+                                this._channelsCache[uniqKey] = channel;
+                                this._replyTo[channel.id] = true;
                                 resolve(channel);
                             });
                         } else {
+                            this._channelsCache[uniqKey] = channel;
+                            this._replyTo[channel.id] = true;
                             resolve(channel);
                         }
                     }
@@ -140,11 +210,19 @@ class DiscordWriter extends DiscordClient {
         });
     }
 
-    static buildMessage(pokemon, entry, mentions = []) {
+    /**
+     * Create the message
+     *
+     * @param pokemon the pokemon
+     * @param mentions list of users id to be mentionned
+     * @returns {"discord.js".RichEmbed}
+     */
+    static buildMessage(pokemon, mentions = []) {
         let embed = new Discord.RichEmbed();
         embed.setTimestamp(new Date());
 
         let title;
+        let entry = pokemon.pokedexEntry;
         if (entry) {
             title = `[${pokemon.country.toUpperCase()}] ${entry.Number} - ${entry.NameLocale}`;
             //embed.setAuthor(`[${pokemon.country.toUpperCase()}] ${entry.Number} - ${entry.NameLocale}`, `https://github.com/PokemonGoF/PokemonGo-Web/raw/46d86a1ecab09412ae870b27ba1818eb311e583f/image/pokemon/${entry.Number}.png`);
@@ -158,7 +236,7 @@ class DiscordWriter extends DiscordClient {
         }
         embed.setTitle(title);
 
-        let description = ['iv', 'lvl', 'pc'].filter(key=>pokemon[key]).map(key=>`${key.toUpperCase()}: **${pokemon[key]}**`).join(' / ');
+        let description = ['iv', 'lvl', 'pc'].filter(key => pokemon[key]).map(key => `${key.toUpperCase()}: **${pokemon[key]}**`).join(' / ');
 
         if (pokemon.despawn) {
             description += `\nDisparait à ${pokemon.despawn}`;
@@ -168,10 +246,10 @@ class DiscordWriter extends DiscordClient {
             description += `\n\n${pokemon.location}`;
         }
 
-        if(pokemon.lat && pokemon.lng) {
+        if (pokemon.lat && pokemon.lng) {
             description += `\n\nhttps://www.google.com/maps?q=${pokemon.lat},${pokemon.lng}`;
             embed.setURL(`http://pog.ovh/cc/?lat=${pokemon.lat}&lon=${pokemon.lng}&pkm_id=${parseInt(entry.Number, 10)}`);
-        } else if(pokemon.url) {
+        } else if (pokemon.url) {
             description += `\n\n${pokemon.url}`;
             embed.setURL(pokemon.url);
             {
@@ -196,6 +274,5 @@ class DiscordWriter extends DiscordClient {
         return embed;
     }
 }
-
 
 module.exports = DiscordWriter;
