@@ -72,40 +72,56 @@ function isInList(userFilter, pokemon, key) {
 }
 
 module.exports = {
-    get: function (entry, pokedex) {
+    get: function (pokemon) {
         return Router.getRules().filter(rule => {
             return rule.filters.some(filter => {
 
-                if (!isPokemonListed(filter.pokemons, pokedex)) {
+                if (!isPokemonListed(filter.pokemons, pokemon.pokedexEntry)) {
                     //Logger.debug(`[filter] Pokemon is not watched`);
                     return false;
                 }
-                if (isPokemonExclude(filter.excludePokemons, pokedex)) {
+                if (isPokemonExclude(filter.excludePokemons, pokemon.pokedexEntry)) {
                     //Logger.debug(`[filter] Pokemon is excluded`);
                     return false;
                 }
-                if (!checkCondition(filter, entry, 'lvl')) {
+                if (!checkCondition(filter, pokemon, 'lvl')) {
                     //Logger.debug(`[filter] Missmatch lvl`);
                     return false;
                 }
-                if (!checkCondition(filter, entry, 'iv')) {
+                if (!checkCondition(filter, pokemon, 'iv')) {
                     //Logger.debug(`[filter] Missmatch iv`);
                     return false;
                 }
-                if (!checkCondition(filter, entry, 'pc')) {
+                if (!checkCondition(filter, pokemon, 'pc')) {
                     //Logger.debug(`[filter] Missmatch pc`);
                     return false;
                 }
-                if (!isInList(filter, entry, 'country')) {
+                if (!isInList(filter, pokemon, 'country')) {
                     //Logger.debug(`[filter] Missmatch country`);
                     return false;
                 }
-                if (!isInList(filter, entry, 'city')) {
+                if (!isInList(filter, pokemon, 'channelId')) {
+                    //Logger.debug(`[filter] Missmatch country`);
+                    return false;
+                }
+                if (!isInList(filter, pokemon, 'channelName')) {
+                    //Logger.debug(`[filter] Missmatch country`);
+                    return false;
+                }
+                if (!isInList(filter, pokemon, 'guildId')) {
+                    //Logger.debug(`[filter] Missmatch country`);
+                    return false;
+                }
+                if (!isInList(filter, pokemon, 'guildName')) {
+                    //Logger.debug(`[filter] Missmatch country`);
+                    return false;
+                }
+                if (!isInList(filter, pokemon, 'city')) {
                     //Logger.debug(`[filter] Missmatch country`);
                     return false;
                 }
 
-                Logger.debug(` > Matching for ${entry.name} for ${rule.destinations[0].writer} > ${rule.destinations[0].group} > ${rule.destinations[0].name}`);
+                Logger.debug(` > Matching for ${pokemon.name} for ${rule.destinations[0].writer} > ${rule.destinations[0].group} > ${rule.destinations[0].name}`);
 
                 return true;
 
