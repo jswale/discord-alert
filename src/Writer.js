@@ -18,7 +18,7 @@ const writers = {};
  * @return {*}
  */
 function load(conf) {
-    Logger.info(`Creating writer ${conf.alias}`);
+    Logger.info(`  > Creating writer ${conf.alias}`);
     let writer = create(conf);
     if (writer) {
         writers[conf.alias] = writer;
@@ -32,20 +32,19 @@ function create(conf) {
         case 'CONSOLE':
             return new ConsoleWriter();
         case 'SMS':
-            return new SmsWriter(conf.server);
+            return new SmsWriter(conf.server, conf.alias);
         case 'API':
-            return new ApiWriter(conf.server);
+            return new ApiWriter(conf.server, conf.alias);
         case 'DISCORD':
         default:
-            return new DiscordWriter(conf.server);
+            return new DiscordWriter(conf.server, conf.alias);
     }
 }
 
 function broadcast(pokemon) {
     Logger.debug(`[${pokemon.country}] ${pokemon.source} - ${pokemon.name} IV:${pokemon.iv} LVL:${pokemon.lvl} PC:${pokemon.pc}`);
 
-    let entry = pokemon.pokedexEntry;
-    Filter.get(pokemon, entry).forEach(rule => {
+    Filter.get(pokemon).forEach(rule => {
         //Logger.debug(` > Found matching rule`, {rule:rule});
         rule.destinations.forEach(destination => {
             let list = Array.isArray(destination.writer) ? destination.writer : [destination.writer];
@@ -54,7 +53,7 @@ function broadcast(pokemon) {
                 if (writer) {
                     //Logger.debug(`Broadcast using writer ${key}`);
                     try {
-                        writer.send(pokemon, entry, destination);
+                        writer.send(pokemon, destination);
                     } catch (ex) {
                         Logger.error(`Error while sending message`, {
                             message: pokemon,
@@ -81,6 +80,5 @@ module.exports = {
     init: function () {
         Logger.info(`Loading writers`);
         config.get('writers').map(conf => load(conf));
-        Logger.info(`> done`);
     }
 };

@@ -18,6 +18,12 @@ class Pokemon {
         this.lat = def.lat;
         this.lng = def.lng;
         this.url = def.url;
+        if(def.channel) {
+            this.channelId = def.channel.id;
+            this.channelName = def.channel.name;
+            this.guildId = def.channel.guild.id;
+            this.guildName = def.channel.guild.name;
+        }
 
         this.pokedexEntry = Utils.getPokedexEntry(this);
     }

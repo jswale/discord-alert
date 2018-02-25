@@ -6,7 +6,7 @@ let folder = path.join(__dirname, '/../data/routes');
 
 class Router {
 
-    constructor(){
+    constructor() {
         this.reset();
     }
 
@@ -17,18 +17,18 @@ class Router {
 
     init() {
         this.reset();
-        if(!fs.existsSync(folder)) {
+        if (!fs.existsSync(folder)) {
             Logger.debug(`Creating folder ${folder}`);
             fs.mkdirSync(folder);
         }
-        Logger.debug(`Looking for ${folder} files`);
+        Logger.debug(`Looking for route files`);
         fs.readdirSync(folder).forEach(file => {
             this.load(file);
         })
     }
 
     load(file) {
-        Logger.debug(`Loading ${file} routing file`);
+        Logger.debug(` > Loading ${file} routing file`);
         this.cache[file] = require(path.join(folder, file));
         this.buildRules();
     }
@@ -37,7 +37,40 @@ class Router {
         this.rules = [].concat.apply([], Object.values(this.cache));
     }
 
-    saveRule (prefix, json) {
+    ruleIsValid(data) {
+        if (!data) {
+            return false;
+        }
+
+        if (!Array.isArray(data)) {
+            Logger.warn(`Array expected as root`);
+            return false;
+        }
+
+        return !data.some(data, (rule) => {
+            // Looking for errors
+            if (!Array.isArray(rule.destinations)) {
+                Logger.warn(`Missing destinations array node`);
+                return true;
+            }
+            if (!Array.isArray(rule.filters)) {
+                Logger.warn(`Missing filters array node`);
+                return true;
+            } else {
+                if (rule.filters.some(filter => {
+                        if (filter.pokemons && !(filter.pokemons === '*' || Array.isArray(filter.pokemons))) {
+                            Logger.warn(`Wrong format for node pokemons. * or Array expected`);
+                            return false;
+                        }
+                    })) {
+                    return false;
+                }
+            }
+            return false;
+        });
+    }
+
+    saveRule(prefix, json) {
         let file = `${prefix}.routes.json`;
         Logger.debug(`Saving ${file} routing file`);
         fs.writeFileSync(path.join(folder, file), json);
@@ -57,6 +90,18 @@ class Router {
 
     getRules() {
         return this.rules;
+    }
+
+    /**
+     * Retrieve the list of rules of a writer
+     *
+     * @param writer
+     * @returns {*[]}
+     */
+    getByWriter(writer) {
+        return [].concat(...this.getRules().map(rule => rule.destinations)).filter(destination => {
+            return (Array.isArray(destination.writer) ? destination.writer : [destination.writer]).indexOf(writer) > -1;
+        });
     }
 }
 

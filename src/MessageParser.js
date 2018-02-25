@@ -7,7 +7,7 @@ const Logger = require('./helpers/Logger');
 const parsers = {};
 
 function register(alias, parser) {
-    Logger.info(`Register parser ${alias}`);
+    Logger.info(`  > Register parser ${alias}`);
     parsers[alias] = parser;
 }
 
@@ -34,6 +34,5 @@ module.exports = {
             let Parser = require(`./parsers/${file}`);
             register(Parser.code, new Parser());
         });
-        Logger.info(`> done`);
     }
 };

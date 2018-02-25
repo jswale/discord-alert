@@ -1,8 +1,8 @@
-var assert = require('assert');
+const assert = require('assert');
 
 describe('Parsers', function () {
 
-    var tests = [{
+    let tests = [{
         parser: 'pokedex100',
         useCases: [
             {
