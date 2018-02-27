@@ -6,10 +6,17 @@ const SmsWriter = require('./writers/SmsWriter');
 const ApiWriter = require('./writers/ApiWriter');
 const ConsoleWriter = require('./writers/ConsoleWriter');
 const Filter = require('./Filter');
+const Cache = require('./Cache');
 const config = require('./helpers/Config');
-
+const NodeCache = require( "node-cache" );
 
 const writers = {};
+
+var cache = new NodeCache({
+    stdTTL : 30,
+    checkperiod : 5
+});
+
 
 /**
  *
@@ -43,6 +50,13 @@ function create(conf) {
 
 function broadcast(pokemon) {
     Logger.debug(`[${pokemon.country}] ${pokemon.source} - ${pokemon.name} IV:${pokemon.iv} LVL:${pokemon.lvl} PC:${pokemon.pc}`);
+
+    if(cache.get(pokemon.identifier)) {
+        Logger.warn(`  > Duplicate entry detected`);
+        return;
+    } else {
+        cache.set(pokemon.identifier, true);
+    }
 
     Filter.get(pokemon).forEach(rule => {
         //Logger.debug(` > Found matching rule`, {rule:rule});

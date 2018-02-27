@@ -3,6 +3,9 @@
 const Logger = require('./helpers/Logger');
 const Router = require('./Router');
 
+const MODE_STRICT = 1;
+const MODE_STARTS = 2;
+
 function checkCondition(userFilter, pokemon, key) {
     const comparators = userFilter[key];
     const value = pokemon[key];
@@ -62,8 +65,6 @@ function isPokemonExclude(pokemons, pokemon) {
     }
 }
 
-const MODE_STRICT = 1;
-const MODE_STARTS = 2;
 
 function isInList(userFilter, pokemon, key, mode = MODE_STRICT) {
     let comparators = userFilter[key];

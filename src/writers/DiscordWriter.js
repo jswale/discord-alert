@@ -39,11 +39,11 @@ class DiscordWriter extends DiscordClient {
     initBroadcast() {
         Router.getByWriter(this.alias).forEach(destination => {
             this.getOrCreateChannel(destination.group, destination.name)
-                //.then(() => Logger.info(`Channel ${destination.name} initialized`))
+            //.then(() => Logger.info(`Channel ${destination.name} initialized`))
                 .catch(reason => Logger.warn('Unable to initialize broadcast channel', {
-                destination: destination,
-                reason: reason
-            }));
+                    destination: destination,
+                    reason: reason
+                }));
         });
     }
 

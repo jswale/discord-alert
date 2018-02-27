@@ -25,6 +25,8 @@ class Pokemon {
             this.guildName = def.channel.guild.name;
         }
 
+        this.identifier = [this.name, this.iv, this.lvl, this.pc, this.lat, this.lng].filter(key=>!!key).join('#$#');
+
         this.pokedexEntry = Utils.getPokedexEntry(this);
     }
 }

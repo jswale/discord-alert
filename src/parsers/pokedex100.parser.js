@@ -49,44 +49,36 @@ const extractor = new RegExp(/\:flag_(.{2}):\s+(?:\(\d+:\d+\))?\s+\*+([^\*]+)\*+
 // 7 : url
 
 class Parser {
-    constructor() {
-        this.cache = {};
-    }
 
     parse(message) {
         return new Promise((resolve, reject) => {
             //Logger.debug(`Pokedex100#${message.id}`);
             let arr = extractor.exec(message.content);
             if (null !== arr) {
-                if (this.cache[arr[7]] === undefined) {
-                    getCoords(arr[7]).then(gps => {
-                        let lat;
-                        let lng;
-                        if (gps) {
-                            lat = gps[0];
-                            lng = gps[1];
-                        }
-                        this.cache[arr[7]] = true;
+                getCoords(arr[7]).then(gps => {
+                    let lat;
+                    let lng;
+                    if (gps) {
+                        lat = gps[0];
+                        lng = gps[1];
+                    }
+                    this.cache[arr[7]] = true;
 
-                        resolve(new Pokemon({
-                            source: "Pokedex100",
-                            name: arr[2],
-                            iv: parseInt(arr[3], 10),
-                            lvl: parseInt(arr[5], 10),
-                            pc: parseInt(arr[4], 10),
-                            template: arr[6],
-                            country: arr[1],
-                            url: arr[7],
-                            lat: lat,
-                            lng: lng,
-                            channel : message.channel
-                        }));
+                    resolve(new Pokemon({
+                        source: "Pokedex100",
+                        name: arr[2],
+                        iv: parseInt(arr[3], 10),
+                        lvl: parseInt(arr[5], 10),
+                        pc: parseInt(arr[4], 10),
+                        template: arr[6],
+                        country: arr[1],
+                        url: arr[7],
+                        lat: lat,
+                        lng: lng,
+                        channel: message.channel
+                    }));
 
-                    }).catch(reason => reject(reason));
-                } else {
-                    Logger.debug(`${PARSER_CODE}: Duplicate entry for ${arr[7]}`);
-                    reject("Duplicate entry");
-                }
+                }).catch(reason => reject(reason));
             }
             else {
                 Logger.debug(`${PARSER_CODE}#${message.id} : ${message.content}`);
