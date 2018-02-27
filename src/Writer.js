@@ -6,7 +6,6 @@ const SmsWriter = require('./writers/SmsWriter');
 const ApiWriter = require('./writers/ApiWriter');
 const ConsoleWriter = require('./writers/ConsoleWriter');
 const Filter = require('./Filter');
-const Cache = require('./Cache');
 const config = require('./helpers/Config');
 const NodeCache = require( "node-cache" );
 
