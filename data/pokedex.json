@@ -16158,8 +16158,11 @@
       "DataNotInGameMaster"
     ],
     "Fast Attack(s)": [
-      "Bite",
-      "Rock Smash"
+      "Tackle",
+      "Hex",
+      "Water Gun",
+      "Powder Snow",
+      "Ember"
     ],
     "Weight": "0.8 kg",
     "Height": "0.3 m",
@@ -16168,9 +16171,14 @@
       "FamilyID": 351
     },
     "Special Attack(s)": [
-      "Stomp",
-      "Crunch",
-      "Ancient Power"
+      "Hurricane",
+      "Energy Ball",
+      "Hydro Pump",
+      "Thunder",
+      "Blizzard",
+      "Ice Beam",
+      "Fire Blast",
+      "Solar Beam"
     ],
     "BaseAttack": 139,
     "BaseDefense": 139,
@@ -18774,8 +18782,11 @@
       "DataNotInGameMaster"
     ],
     "Fast Attack(s)": [
-      "Bite",
-      "Rock Smash"
+      "Tackle",
+      "Hex",
+      "Water Gun",
+      "Powder Snow",
+      "Ember"
     ],
     "Weight": "0.8 kg",
     "Height": "0.3 m",
@@ -18784,9 +18795,14 @@
       "FamilyID": 351
     },
     "Special Attack(s)": [
-      "Stomp",
-      "Crunch",
-      "Ancient Power"
+      "Hurricane",
+      "Energy Ball",
+      "Hydro Pump",
+      "Thunder",
+      "Blizzard",
+      "Ice Beam",
+      "Fire Blast",
+      "Solar Beam"
     ],
     "BaseAttack": 139,
     "BaseDefense": 139,

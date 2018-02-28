@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
+const config = require('./helpers/Config');
 const Logger = require('./helpers/Logger');
 
-let folder = path.join(__dirname, '/../data/routes');
+let folder = path.join(__dirname, `/../${config.get('path:routes')}`);
 
 class Router {
 
@@ -18,11 +19,11 @@ class Router {
     init() {
         this.reset();
         if (!fs.existsSync(folder)) {
-            Logger.debug(`Creating folder ${folder}`);
+            Logger.info(`Creating folder ${folder}`);
             fs.mkdirSync(folder);
         }
-        Logger.debug(`Looking for route files`);
-        fs.readdirSync(folder).forEach(file => {
+        Logger.debug(`Looking for route files in ${folder}`);
+        fs.readdirSync(folder).filter(file => file.endsWith('.route.json')).forEach(file => {
             this.load(file);
         })
     }

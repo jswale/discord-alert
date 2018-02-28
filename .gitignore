@@ -2,7 +2,8 @@
 .idea
 *.iml
 node_modules
-data/config.json
-data/routes.json
 logs/*
-data/routes/*.json
+data/config.json
+data/listeners/*
+data/routes/*
+data/writers/*

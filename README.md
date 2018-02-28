@@ -1,18 +1,30 @@
 # discord-alert
 
+## Breaking change v2
+
+* The configuration of the `listeners` and `writers` are now stored in a specific folder such as `routes`.
+  * extract each listener in a seperated file using `.listener.json` as suffix into the folder `data/listeners` 
+  * extract each writer in a seperated file using `.writer.json` as suffix into the folder `data/writers` 
+
 ## Manage config.json
 
-The file `data/config.json` contains the configuration for the servers used for listening or writing informations.
+The file `data/config.json` contains the global configuration and the folders containing the `listeners`, `writers` and `routes`.
+
+```json
+{
+    "writers": "./data/writers",
+    "listeners": "./data/listeners",
+    "routes": "./data/routes"
+}
+```
+
+This is the default values so you can ommit them in the configuration file.
 
 ### Writers
 
-The writers are defined in the array named **writers**
-```json
-{
-    "writers": [        
-    ]
-}
-```
+The writers are stored as separated files into the folder specified before (default `./data/writers`)
+
+In order to be loaded, the filename must ends with `.writer.json` otherwise it will be ignored
 
 A **writer** must contain an alias (referenced in a listener), a type and a node server for the connexion informations. 
 
@@ -94,13 +106,9 @@ You can send the pokemon object to an remote API.
 
 ### Listeners
 
-The listeners are defined in the array named **listeners** and are a collection of channel accessible from an account.
-```json
-{
-    "listeners": [
-    ]
-}
-```
+The listeners are stored as separated files into the folder specified before (default `./data/listeners`)
+
+In order to be loaded, the filename must ends with `.listeners.json` otherwise it will be ignored
 
 A listener contains :
 * the `type` of listener
@@ -207,7 +215,9 @@ You can add more support for you own channels according to the format used to pu
 
 ## Manage routes
 
-The folder `data/routes` contains the routes used to broadcast the messages.
+The folder `./data/routes` contains the routes used to broadcast the messages.
+
+In order to be loaded, the filename must ends with `.route.json` otherwise it will be ignored
 
 The route files can be generated using the generator available on http://localhost:3000 and are saved using the suffix `.routes.json`
 

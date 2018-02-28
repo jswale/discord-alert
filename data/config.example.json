@@ -4,31 +4,9 @@
       "sessionId":"<sessionId>"
     }
   },
-  "writers": [
-    {
-      "alias": "main",
-      "server": {
-        "login": "account@gmail.com",
-        "password": "password"
-      },
-      "guild": "<id of the guild>"
-    },
-    {
-      "alias": "alt",
-      "server": {
-        "token": ""
-      },
-      "guild": "<id of the guild>"
-    }
-  ],
-  "listeners": [
-    {
-      "login": "account2@gmail.com",
-      "password": "password",
-      "writer": "main",
-      "channels": {
-        "<channelID>": "<ParserName>"
-      }
-    }
-  ]
+  "path": {
+    "writers": "./data/writers",
+    "listeners": "./data/listeners",
+    "routes": "./data/routes"
+  }
 }
