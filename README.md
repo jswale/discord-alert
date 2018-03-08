@@ -108,7 +108,7 @@ You can send the pokemon object to an remote API.
 
 The listeners are stored as separated files into the folder specified before (default `./data/listeners`)
 
-In order to be loaded, the filename must ends with `.listeners.json` otherwise it will be ignored
+In order to be loaded, the filename must ends with `.listener.json` otherwise it will be ignored
 
 A listener contains :
 * the `type` of listener
