@@ -50,22 +50,7 @@ class Parser {
                     }));
                 }
             }
-            Logger.debug(`${PARSER_CODE}#${message.id} : ${message.content}`);
-            Logger.warn(`${PARSER_CODE}: Unable to parse message`, message);
-            //Formatter.format(message);
-            reject(`${PARSER_CODE}: Unable to parse message`);
-
-            //Logger.debug("MapLaValee", message);
-            //Formatter.format(message);
-            /*
-            embeds:
-               [ MessageEmbed {
-                   message: [Circular],
-                   type: 'rich',
-                   title: '[Bussy-Saint-Georges] Arcko ???%',
-                   description: 'IV : ???% (?/?/?)\nLV : ? | PC : ?\nunknown / unknown\n\n48.8469334692,2.69656179552\nhttp://pog.ovh/cc/?lat=48.84693&lon=2.69656&pkm_id=252\n\n14 Rue de Saint-Martin 77600 Bussy-Saint-Georges\nDepop : 23:30:07 (20m 45s)',
-                   url: 'http://maps.google.com/maps?q=48.84693346922325,2.6965617955172956',
-            */
+            reject(`${PARSER_CODE}: Unable to parse message : ${message.content}`);
         });
     }
 }

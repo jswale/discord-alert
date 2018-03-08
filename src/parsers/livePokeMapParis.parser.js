@@ -53,9 +53,7 @@ class Parser {
                     channel : message.channel
                 }));
             } else {
-                Logger.warn(`${PARSER_CODE}: Unable to parse message`, {message: message.content});
-                //Formatter.format(message);
-                reject(`${PARSER_CODE}: Unable to parse message`);
+                reject(`${PARSER_CODE}: Unable to parse message : ${message.content}`);
             }
         });
     }

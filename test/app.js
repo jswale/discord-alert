@@ -56,6 +56,20 @@ Depop : 23:30:07 (20m 45s)`
             title: 'normal without street',
             message: '[95100] : **Rattata** ♂  IV**100%** LVL**27** PC**453** Despawn 09:43 (15/15/15) (Vive-Attaque/Croc de Mort) (95100 Argenteuil, France) https://www.google.com/maps?q=48.93536562420410%2C2.24180558321670'
         }]
+    } , {
+        parser : 'globalPoGo',
+        useCases : [{
+            title : 'classic',
+            message : ':flag_us: **[USA]**  **Charmander** - <:iv:357829537423425537> **73** <:cp:357829527705092096> **127** *** :trophy: Scratch/Flame Charge*** <:level:367027521780318209> **6** <:male:357829542402064385>** -- <:compass:357829524525809674> 37.682226918, -97.251755305 :clock10: 00:15:02 left.**\n' +
+            'Catch it here: <http://globalpogo.com/?lat=37.682226918&lon=-97.251755305&pname=charmander>\n' +
+            '\n' +
+            'Support us and get premium data here: <https://www.patreon.com/GlobalPoGo>'
+        }, {
+            title:'with notification',
+            message : '<@341918992283205642>, \n' +
+            ':flag_us: **[USA]**  **Shelgon** - <:iv:357829537423425537> **71** <:cp:357829527705092096> **898** *** :trophy: Dragon Breath/Dragon Pulse*** <:level:367027521780318209> **17** <:female:357829534256594944>** -- <:compass:357829524525809674> 37.652956034, -97.479265046 :clock10: 00:21:22 left.\n' +
+            'Catch it here: <http://globalpogo.com/?lat=37.652956034&lon=-97.479265046&pname=shelgon>'
+        }]
     }
     ];
 

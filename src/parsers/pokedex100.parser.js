@@ -50,41 +50,43 @@ const extractor = new RegExp(/\:flag_(.{2}):\s+(?:\(\d+:\d+\))?\s+\*+([^\*]+)\*+
 
 class Parser {
 
+    getPokemon(message, data, gps) {
+        let lat;
+        let lng;
+        if (gps) {
+            lat = gps[0];
+            lng = gps[1];
+        }
+        return new Pokemon({
+            source: "Pokedex100",
+            name: data[2],
+            iv: parseInt(data[3], 10),
+            lvl: parseInt(data[5], 10),
+            pc: parseInt(data[4], 10),
+            template: data[6],
+            country: data[1],
+            url: data[7],
+            lat: lat,
+            lng: lng,
+            channel: message.channel
+        });
+    }
+
     parse(message) {
         return new Promise((resolve, reject) => {
             //Logger.debug(`Pokedex100#${message.id}`);
             let arr = extractor.exec(message.content);
             if (null !== arr) {
                 getCoords(arr[7]).then(gps => {
-                    let lat;
-                    let lng;
-                    if (gps) {
-                        lat = gps[0];
-                        lng = gps[1];
-                    }
-                    this.cache[arr[7]] = true;
-
-                    resolve(new Pokemon({
-                        source: "Pokedex100",
-                        name: arr[2],
-                        iv: parseInt(arr[3], 10),
-                        lvl: parseInt(arr[5], 10),
-                        pc: parseInt(arr[4], 10),
-                        template: arr[6],
-                        country: arr[1],
-                        url: arr[7],
-                        lat: lat,
-                        lng: lng,
-                        channel: message.channel
-                    }));
-
-                }).catch(reason => reject(reason));
+                    resolve(this.getPokemon(message, arr, gps));
+                    return this.resolve(message, arr, gps);
+                }).catch(reason => {
+                    Logger.debug(`${PARSER_CODE}: Unable to get gps from `, {url: arr[7]});
+                    resolve(this.getPokemon(message, arr, null));
+                });
             }
             else {
-                Logger.debug(`${PARSER_CODE}#${message.id} : ${message.content}`);
-                Logger.warn(`${PARSER_CODE}: Unable to parse message`, {content: message.content});
-                //Formatter.format(message);
-                reject(`${PARSER_CODE}: Unable to parse message`);
+                reject(`${PARSER_CODE}: Unable to parse message : ${message.content}`);
             }
         });
     }

@@ -17,10 +17,10 @@ module.exports = class DiscordListener extends DiscordClient {
         // Listener
         this.client.on('message', (message) => {
             let channelId = message.channel.id;
-            let guildId = message.channel.guild.id;
+            let guildId = message.channel.guild && message.channel.guild.id;
 
             let format;
-            if (this.guilds[guildId]) {
+            if (guildId && this.guilds[guildId]) {
                 format = this.guilds[guildId];
             } else {
                 format = this.channels[channelId];
@@ -34,7 +34,7 @@ module.exports = class DiscordListener extends DiscordClient {
                 MessageParser.parse(message, format).then(pokemon => {
                     Writer.broadcast(pokemon);
                 }).catch(reason => {
-                    Logger.warn(`Unable to parse message`, {reason: reason, message: message});
+                    Logger.warn(`Unable to parse message`, {reason: reason, message: message.toString()});
                 });
             } catch (ex) {
                 Logger.error(`Error while parsing message`, {message: message, exception: ex});

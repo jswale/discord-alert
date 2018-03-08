@@ -20,8 +20,10 @@ module.exports = {
                 resolve(`(${message.channel.name}): ${message.content.replace(/\n/g, ' ')}`);
             } else {
                 try {
-                    parser.parse(message).then(pokemon => resolve(pokemon)).catch(reason => reject(reason));
-                } catch(ex) {
+                    parser.parse(message).then(pokemon => {
+                        resolve(pokemon)
+                    }).catch(reason => reject(reason));
+                } catch (ex) {
                     reject(ex);
                 }
             }

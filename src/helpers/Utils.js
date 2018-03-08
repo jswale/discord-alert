@@ -73,4 +73,14 @@ function getRangeInt(prop, min, max) {
     return Math.floor(Math.random() * max) + min;
 }
 
-module.exports = {normalize, getPokedexEntry, getPokedexEntryDetail, getPokedexEntryByName, getPokedexEntryByNumber, getRangeInt, getRandomValue};
+function dateToMinute(date) {
+    return date.split(':').map(v => parseInt(v, 10)).reverse().reduce((s, v, index) => s + v * Math.pow(60, index));
+}
+
+function dateFromNow(minutes) {
+    var d = new Date();
+    d.setMinutes(d.getMinutes() + minutes);
+    return d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+}
+
+module.exports = {normalize, getPokedexEntry, getPokedexEntryDetail, getPokedexEntryByName, getPokedexEntryByNumber, getRangeInt, getRandomValue, dateToMinute, dateFromNow};

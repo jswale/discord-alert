@@ -27,7 +27,7 @@ class Pokemon {
 
         this.identifier = [this.name, this.iv, this.lvl, this.pc, this.lat, this.lng].filter(key=>!!key).join('#$#');
 
-        console.log(`PKM: ${this.identifier}`);
+        //console.log(`PKM: ${this.identifier}`);
 
         this.pokedexEntry = Utils.getPokedexEntry(this);
     }
