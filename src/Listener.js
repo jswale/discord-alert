@@ -12,7 +12,6 @@ let folder = path.join(__dirname, `/../${config.get('path:listeners')}`);
 class Listener {
 
     init() {
-        this.reset();
         if (!fs.existsSync(folder)) {
             Logger.info(`Creating folder ${folder}`);
             fs.mkdirSync(folder);

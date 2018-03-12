@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const Logger = require('./helpers/Logger');
-const config = require('../helpers/Config');
+const config = require('./helpers/Config');
 const Router = require('./Router');
 const Listener = require('./Listener');
 

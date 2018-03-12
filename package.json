@@ -10,14 +10,14 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "crypto-js": "^3.1.9-1",
-    "discord.js": "^11.3.0",
+    "discord.js": "^11.3.2",
     "discordv8": "^8.4.2",
     "express": "^4.16.2",
     "nconf": "^0.10.0",
     "node-cache": "^4.1.1",
-    "request": "^2.83.0",
+    "request": "^2.85.0",
     "request-promise": "^4.2.2",
-    "winston": "^3.0.0-rc1",
+    "winston": "^3.0.0-rc2",
     "zlib": "^1.0.5"
   }
 }
