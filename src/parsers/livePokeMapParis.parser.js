@@ -41,6 +41,7 @@ class Parser {
                     lvl: parseInt(arr[4], 10),
                     pc: parseInt(arr[5], 10),
                     boosted: null !== arr[7],
+                    ivDetails: arr[8],
                     template: arr[9],
                     despawn: arr[6],
                     country: 'fr',

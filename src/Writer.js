@@ -7,6 +7,7 @@ const config = require('./helpers/Config');
 const DiscordWriter = require('./writers/DiscordWriter');
 const SmsWriter = require('./writers/SmsWriter');
 const ApiWriter = require('./writers/ApiWriter');
+const PokeAlarmWriter = require('./writers/PokeAlarmWriter');
 const ConsoleWriter = require('./writers/ConsoleWriter');
 const Filter = require('./Filter');
 const NodeCache = require("node-cache");
@@ -57,6 +58,8 @@ class Writer {
                 return new SmsWriter(conf.server, conf.alias);
             case 'API':
                 return new ApiWriter(conf.server, conf.alias);
+            case 'PA':
+                return new PokeAlarmWriter(conf.server, conf.alias);
             case 'DISCORD':
             default:
                 return new DiscordWriter(conf.server, conf.alias);
