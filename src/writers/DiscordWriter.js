@@ -16,7 +16,7 @@ class DiscordWriter extends DiscordClient {
         this._channelsCache = {};
         this._replyTo = {};
         this.getGuild().channels.forEach(channel => {
-            if (channel.type === null) {
+            if (channel.type === "category") {
                 this._categories[channel.name] = channel;
             }
         });

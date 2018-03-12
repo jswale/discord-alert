@@ -4,7 +4,7 @@ const Logger = require('../helpers/Logger');
 const Pokemon = require('../domain/Pokemon');
 
 const PARSER_CODE = 'LPMP';
-const extractor = new RegExp(/\[([^\]]+)\]\s:\s\*{2}([^\*]+)\*{2}\s.\s+IV\*{2}(\d+)%\*{2}\s+LVL\*{2}(\d+)\*{2}\s+PC\*{2}(\d+)\*\*\sDespawn\s+(\d{2}:\d{2})\s(\*{2}Boost météo [^\*]*\*{2}\s+)?\(([^)]*)\)\s(?:\(([^)]*)\)\s+)?\(((?:.*?, )?(\d{5}) (.*?),.*?)\)\s+(http.*)/);
+const extractor = new RegExp(/\[([^\]]+)\]\s:\s\*{2}([^\*]+)\*{2}\s.\s+(?:IV\*{2}(\d+)%\*{2}\s+)?(?:LVL\*{2}(\d+)\*{2}\s+)?(?:PC\*{2}(\d+)\*{2})?\sDespawn\s+(\d{2}:\d{2})\s(\*{2}Boost météo [^\*]*\*{2}\s+)?\(([^)]*)\)\s(?:\(([^)]*)\)\s+)?\(((?:.*?, )?(\d{5}) (.*?),.*?)\)\s+(http.*)/);
 // 1 : postalCode
 // 2 : name
 // 3 : IV

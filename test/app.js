@@ -55,6 +55,12 @@ Depop : 23:30:07 (20m 45s)`
         }, {
             title: 'normal without street',
             message: '[95100] : **Rattata** ♂  IV**100%** LVL**27** PC**453** Despawn 09:43 (15/15/15) (Vive-Attaque/Croc de Mort) (95100 Argenteuil, France) https://www.google.com/maps?q=48.93536562420410%2C2.24180558321670'
+        }, {
+            title: 'no iv / lvl / pc / despawn',
+            message: '[92370] : **Voltali** ♂  Despawn 17:58 (?/?) (50 Rue Alexis Maneyrol, 92370 Chaville, France) https://www.google.com/maps?q=48.80013419811140%2C2.19198950927587'
+        }, {
+            title: 'no iv / lvl / pc / boost / despawn',
+            message: '[78160] : **Togetic** ♂  Despawn 17:58 **Boost météo Vent** (?/?) (141 Route de Saint-Cyr, 78160 Marly-le-Roi, France) https://www.google.com/maps?q=48.86216003709140%2C2.08178958685476'
         }]
     } , {
         parser : 'globalPoGo',
