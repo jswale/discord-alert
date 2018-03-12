@@ -83,4 +83,60 @@ function dateFromNow(minutes) {
     return d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
 }
 
-module.exports = {normalize, getPokedexEntry, getPokedexEntryDetail, getPokedexEntryByName, getPokedexEntryByNumber, getRangeInt, getRandomValue, dateToMinute, dateFromNow};
+
+function toPokeAlarmFormat(pokemon) {
+    let data = {
+        "encounter_id": Math.floor(Math.random() * 10000000000),
+        "spawnpoint_id": Math.floor(Math.random() * 10000000000),
+        "player_level": 31,
+    };
+
+    if (typeof pokemon.pokedexEntry === 'object' && pokemon.pokedexEntry.Number) {
+        data['pokemon_id'] = pokemon.pokedexEntry.Number;
+    }
+
+    if (pokemon.lat) {
+        data['latitude'] = pokemon.lat;
+    }
+
+    if (pokemon.lng) {
+        data['longitude'] = pokemon.lng;
+    }
+
+    if (pokemon.despawn) {
+        let disappearTime = new Date();
+        let hour = pokemon.despawn.split(':');
+        if (hour && hour.length === 2) {
+            if (hour[0] === '00' && disappearTime.getHours() === 23) {
+                disappearTime.setHours(hour[0]);
+                disappearTime.setDate(disappearTime.getDate() + 1);
+            } else {
+                disappearTime.setHours(hour[0]);
+            }
+            disappearTime.setMinutes(hour[1]);
+
+            data['disappear_time'] = Math.floor(disappearTime.getTime() / 1000);
+        }
+    }
+
+    if (pokemon.pc) {
+        data['cp'] = pokemon.pc;
+    }
+
+    if (pokemon.lvl) {
+        data['pokemon_level'] = pokemon.lvl;
+    }
+
+    if (pokemon.ivDetails) {
+        let ivs = pokemon.ivDetails.split('/');
+        if (ivs && ivs.length === 3) {
+            data['individual_attack'] = ivs[0];
+            data['individual_defense'] = ivs[1];
+            data['individual_stamina'] = ivs[2];
+        }
+    }
+
+    return data;
+}
+
+module.exports = {normalize, getPokedexEntry, getPokedexEntryDetail, getPokedexEntryByName, getPokedexEntryByNumber, getRangeInt, getRandomValue, dateToMinute, dateFromNow, toPokeAlarmFormat};

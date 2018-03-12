@@ -13,7 +13,7 @@ class Router {
 
     reset() {
         this.cache = {};
-        this.rules = [];
+        this.datas = [];
     }
 
     init() {
@@ -30,56 +30,22 @@ class Router {
 
     load(file) {
         Logger.debug(` > Loading ${file} routing file`);
-        this.cache[file] = require(path.join(folder, file));
-        this.buildRules();
+        this.cacheData(file, require(path.join(folder, file)));
     }
 
-    buildRules() {
-        this.rules = [].concat.apply([], Object.values(this.cache));
+    cacheData(file, data) {
+        this.cache[file] = data;
+        this.datas = [].concat.apply([], Object.values(this.cache));
     }
 
-    ruleIsValid(data) {
-        if (!data) {
-            return false;
-        }
-
-        if (!Array.isArray(data)) {
-            Logger.warn(`Array expected as root`);
-            return false;
-        }
-
-        return !data.some(data, (rule) => {
-            // Looking for errors
-            if (!Array.isArray(rule.destinations)) {
-                Logger.warn(`Missing destinations array node`);
-                return true;
-            }
-            if (!Array.isArray(rule.filters)) {
-                Logger.warn(`Missing filters array node`);
-                return true;
-            } else {
-                if (rule.filters.some(filter => {
-                        if (filter.pokemons && !(filter.pokemons === '*' || Array.isArray(filter.pokemons))) {
-                            Logger.warn(`Wrong format for node pokemons. * or Array expected`);
-                            return false;
-                        }
-                    })) {
-                    return false;
-                }
-            }
-            return false;
-        });
-    }
-
-    saveRule(prefix, json) {
+    save(prefix, json) {
         let file = `${prefix}.routes.json`;
         Logger.debug(`Saving ${file} routing file`);
         fs.writeFileSync(path.join(folder, file), json);
-        this.cache[file] = JSON.parse(json);
-        this.buildRules();
+        this.cacheData(file, JSON.parse(json));
     }
 
-    getRule(prefix) {
+    getByName(prefix) {
         let file = `${prefix}.routes.json`;
         Logger.debug(`Searching for ${file} routing file`);
         return this.cache[file];
@@ -89,8 +55,8 @@ class Router {
         return Object.keys(this.cache);
     }
 
-    getRules() {
-        return this.rules;
+    getAll() {
+        return this.datas;
     }
 
     /**
@@ -100,7 +66,7 @@ class Router {
      * @returns {*[]}
      */
     getByWriter(writer) {
-        return [].concat(...this.getRules().map(rule => rule.destinations)).filter(destination => {
+        return [].concat(...this.getAll().map(rule => rule.destinations)).filter(destination => {
             return (Array.isArray(destination.writer) ? destination.writer : [destination.writer]).indexOf(writer) > -1;
         });
     }

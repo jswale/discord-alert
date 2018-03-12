@@ -86,7 +86,7 @@ function isInList(userFilter, pokemon, key, mode = MODE_STRICT) {
 
 module.exports = {
     get: function (pokemon) {
-        return Router.getRules().filter(rule => {
+        return Router.getAll().filter(rule => {
             return rule.filters.some(filter => {
 
                 if (!isPokemonListed(filter.pokemons, pokemon.pokedexEntry)) {

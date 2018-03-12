@@ -12,6 +12,7 @@ let folder = path.join(__dirname, `/../${config.get('path:listeners')}`);
 class Listener {
 
     init() {
+        this.reset();
         if (!fs.existsSync(folder)) {
             Logger.info(`Creating folder ${folder}`);
             fs.mkdirSync(folder);
@@ -32,7 +33,7 @@ class Listener {
         return listener;
     }
 
-    create(conf) {
+   create(conf) {
         switch (conf.type) {
             case "FAKE":
                 return new FakeListener(conf.server);

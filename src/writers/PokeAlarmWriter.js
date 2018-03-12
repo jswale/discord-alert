@@ -1,4 +1,5 @@
 const Logger = require('../helpers/Logger');
+const Utils = require('../helpers/Utils');
 const rp = require('request-promise');
 
 class PokeAlarmWriter {
@@ -23,7 +24,7 @@ class PokeAlarmWriter {
             uri: this.conf.url,
             body: {
                 type: "pokemon",
-                message: pokemon.toPokeAlarmFormat()
+                message: Utils.toPokeAlarmFormat(pokemon)
             },
             json: true
         };

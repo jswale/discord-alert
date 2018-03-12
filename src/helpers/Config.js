@@ -4,10 +4,14 @@ function Config() {
     nconf.argv().env();
     nconf.file('default', './data/config.json');
     nconf.defaults({
-        path: {
-            writers: "./data/writers",
-            listeners: "./data/listeners",
-            routes: "./data/routes"
+        "webServer": {
+            "port": 3000,
+            "enabled": true
+        },
+        "path": {
+            "writers": "./data/writers",
+            "listeners": "./data/listeners",
+            "routes": "./data/routes"
         }
     });
 }

@@ -8,13 +8,23 @@
 
 ## Manage config.json
 
-The file `data/config.json` contains the global configuration and the folders containing the `listeners`, `writers` and `routes`.
+The file `data/config.json` contains the global configuration with:
+* informations about the webServer
+* the related folders for `listeners`, `writers` and `routes`.
 
 ```json
 {
+  "conf" : {
+    "webServer" : {
+      "port" : 3000,
+      "enabled" : true
+    }
+  },
+  "path" : {
     "writers": "./data/writers",
     "listeners": "./data/listeners",
     "routes": "./data/routes"
+  }
 }
 ```
 
